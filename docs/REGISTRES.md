@@ -18,6 +18,7 @@ Modèles vides : `modeles/registres/*.csv` → à copier dans `C:\BK\03_TRAVAIL\
 | `decisions.csv` | Décisions prises (qui, où, impact coût / délai) |
 | `consultations.csv` | TSC : suivi des consultations jusqu'à l'attribution |
 | `tsb.csv` | Budget par lot. `atterrissage = engagé + avenants en cours + reste à engager + aléas` |
+| `whatsapp_sources.csv` | Conversations WhatsApp autorisées (reste sur le PC). Tout ce qui n'y figure pas est privé |
 | `contacts.csv` | Reste **sur le PC uniquement** (exclu de GitHub). Lu seulement pour préparer un brouillon |
 
 À trancher plus tard, sur pièces : codification des lots, détail des retenues et circuit de visa des décomptes, niveau de détail du TSB.

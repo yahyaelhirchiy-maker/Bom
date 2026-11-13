@@ -46,6 +46,8 @@ _texte/
 ETAT.md
 !modeles/ETAT.md
 contacts*.*
+whatsapp*.*
+!modeles/registres/whatsapp_sources.csv
 !modeles/registres/contacts.csv
 
 # --- Secrets ---

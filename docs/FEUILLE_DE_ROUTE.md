@@ -21,6 +21,12 @@ Claude n'est réveillé que s'il y a un écart, pour l'expliquer et proposer les
 - Python vérifie les **Éléments envoyés** : un brouillon envoyé passe l'action à `vérifié` sans intervention.
 - Comparaison brouillon / mail réellement envoyé → un court fichier de style, pour que les brouillons suivants demandent moins de corrections.
 
+## 3 bis. WhatsApp (lecture seule)
+- D'abord à la demande, en session interactive, pour mesurer le coût en tokens.
+- Ensuite deux relèves par jour (avant le briefing et avant le récap), limitées aux groupes de `whatsapp_sources.csv` et aux nouveaux messages.
+- Photos et messages vocaux : non lus automatiquement ; signalés (« 3 photos de X à 10h12 ») pour que le chef de projet décide.
+- Pas de bibliothèque non officielle (risque de blocage du compte) : seulement WhatsApp Web dans Chrome.
+
 ## 4. Pièces jointes et décomptes
 - Enregistrement automatique des pièces jointes dans `02_ENTRANT\<date>_<expéditeur>\`, conversion en texte une seule fois.
 - Contrôle arithmétique des décomptes en Python : cumul cohérent avec le décompte précédent, cumul ≤ marché + avenants signés, retenues. Claude ne regarde que les anomalies.
