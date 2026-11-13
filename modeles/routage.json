@@ -1,0 +1,8 @@
+{
+  "_lisez_moi": "modele = modèle Claude par tâche. secours = true : si la limite est atteinte, la tâche passe par OmniRoute (modèle gratuit). false : la tâche attend le retour de Claude et sera reprise au passage suivant.",
+  "recap":         { "modele": "haiku",  "secours": true  },
+  "briefing":      { "modele": "sonnet", "secours": true  },
+  "mails_simple":  { "modele": "sonnet", "secours": true  },
+  "mails_delicat": { "modele": "opus",   "secours": false },
+  "hebdo":         { "modele": "opus",   "secours": false }
+}

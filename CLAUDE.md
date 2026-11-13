@@ -39,5 +39,11 @@ Procédure complète : skill `traiter-mail`. Objectif : brouillon prêt à envoy
 - Outlook : passer par `scripts\outlook.py` (texte, historique coupé). Chrome seulement en secours, en lisant le texte, jamais par captures.
 - MS Project : `scripts\planning.py extraire` (une fois, si le .mpp a changé), puis `planning.py lot "<mot>"` pour ne lire que le lot utile.
 
-## Contacts
-`03_TRAVAIL\registres\contacts.csv` : ne le lire que pour préparer un brouillon.
+## Contacts et messages vocaux
+- `registres\contacts.csv` : ne le lire que pour préparer un brouillon.
+- Les demandes arrivent en dictée vocale : corriger les noms avec `registres\lexique.csv`. Si un mot inconnu revient, l'ajouter au lexique. Ne demander une confirmation que si l'erreur changerait une action importante.
+
+## Modèles et consommation
+- Modèle par tâche : `modeles\routage.json` (le moins cher qui suffit ; Opus pour le délicat).
+- Tâches automatiques journalisées dans `03_TRAVAIL\logs\consommation.csv` ; résumé : `scripts\conso.py`.
+- Une réponse marquée `[SECOURS]` vient d'un modèle gratuit : la relire avant tout usage.

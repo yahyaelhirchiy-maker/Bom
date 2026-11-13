@@ -91,5 +91,30 @@ schtasks /Create /TN "BOSKO\Mails"     /SC WEEKLY /D MON,TUE,WED,THU,FRI /ST 07:
 Résultats dans `C:\BK\04_PUBLIER\<tâche>\`, journaux dans `C:\BK\03_TRAVAIL\logs\`.
 Tester une fois à la main : `schtasks /Run /TN "BOSKO\Briefing"`.
 
-> **BOSKO\Mails** relève les mails toutes les 30 min (7h–19h) et prépare les brouillons tout seul. Tu n'as plus qu'à relire et envoyer depuis Outlook.
+> **BOSKO\Mails** trie les mails toutes les 30 min (7h–19h) en Python, **sans IA** ; Claude n'est réveillé que s'il y a un vrai mail à traiter. Au premier passage, il reprend les 3 derniers jours. Tu n'as plus qu'à relire et envoyer depuis Outlook.
 > Les tâches ne peuvent rien envoyer : `outlook.py` ne contient aucun appel d'envoi.
+
+## 9. Secours OmniRoute (quand la limite Claude est atteinte)
+Fonctionnement : chaque tâche a un modèle Claude (`modeles\routage.json`). Si la limite est atteinte :
+- tâche avec `"secours": true` (récap, briefing, mails simples) → relancée via **OmniRoute** sur un modèle gratuit, réponse marquée `[SECOURS]` ;
+- tâche avec `"secours": false` (mails délicats, rapport hebdo) → **mise en attente** dans `04_PUBLIER\en_attente.txt`, reprise au passage suivant (la limite Claude se réinitialise par fenêtre de quelques heures).
+
+⚠ **Confidentialité.** Les fournisseurs gratuits peuvent conserver ou réutiliser ce qu'on leur envoie, et les tâches contiennent des données du projet.
+Configurer dans OmniRoute, dans l'ordre : 1) un **modèle local** (Ollama, sur ce PC : gratuit et rien ne sort), 2) seulement ensuite un fournisseur gratuit en ligne, en connaissance de cause.
+Ne **pas** brancher l'abonnement Claude dans OmniRoute : Claude Code reste connecté directement ; OmniRoute ne sert que de secours.
+
+Installation (à faire ensemble, d'après le README officiel du projet OmniRoute sur GitHub) :
+1. Installer OmniRoute et, si possible, Ollama + un modèle adapté à la carte graphique du PC.
+2. Dans OmniRoute, créer une route `bosko-secours` (local d'abord), puis noter son adresse et sa clé.
+3. Enregistrer les variables (PowerShell utilisateur) :
+```powershell
+setx OMNIROUTE_URL    "http://localhost:<port>"
+setx OMNIROUTE_KEY    "<clé OmniRoute>"
+setx OMNIROUTE_MODELE "bosko-secours"
+```
+Sans ces variables, il n'y a pas de bascule : les tâches attendent simplement le retour de Claude.
+
+## 10. Suivre la consommation
+- Tâches automatiques : `python C:\BK\00_SYSTEME\scripts\conso.py --jours 7` (aussi en annexe du rapport du vendredi).
+- Session interactive (tes vocaux) : commande `/usage` dans Claude Code.
+- Si une tâche coûte trop : baisser son modèle dans `routage.json` ou espacer la relève des mails (`/RI 30` → `/RI 60`).

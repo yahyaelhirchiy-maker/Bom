@@ -4,7 +4,7 @@
   python outlook.py lire N
   python outlook.py brouillon N --corps corps.txt [--pj fichier1 fichier2 ...]
 
-N = numéro court donné par `lister` (correspondance gardée dans _cache).
+N = numéro court donné par `lister` (1, 2…) ou par tri_mails.py (M1, M2…).
 Le brouillon est une « Répondre à tous » dans le fil existant, Cc ajoutés
 depuis contacts.csv (cc_systematique = oui), puis ENREGISTRÉ dans Brouillons.
 Ce script ne contient volontairement aucun appel à .Send().
@@ -49,11 +49,11 @@ def lister(jours, non_lus):
     items.Sort("[ReceivedTime]", True)
     depuis = (datetime.now() - timedelta(days=jours)).strftime("%d/%m/%Y %H:%M")
     filtre = f"[ReceivedTime] >= '{depuis}'" + (" AND [UnRead] = True" if non_lus else "")
-    ids = {}
+    ids = {k: v for k, v in (json.loads(CACHE.read_text(encoding="utf-8")) if CACHE.exists() else {}).items() if k.startswith("M")}
     for i, m in enumerate(items.Restrict(filtre), 1):
         if m.Class != 43:  # 43 = mail
             continue
-        ids[i] = m.EntryID
+        ids[str(i)] = m.EntryID
         apercu = " ".join(m.Body.split())[:160]
         pj = f" [PJ:{m.Attachments.Count}]" if m.Attachments.Count else ""
         print(f"{i} | {m.ReceivedTime:%Y-%m-%d %H:%M} | {expediteur(m)} | {m.Subject}{pj} | {apercu}")
@@ -63,7 +63,7 @@ def lister(jours, non_lus):
 
 def mail(n):
     ids = json.loads(CACHE.read_text(encoding="utf-8"))
-    return ns().GetItemFromID(ids[str(n)])
+    return ns().GetItemFromID(ids[str(n).upper()])
 
 
 def lire(n):
@@ -96,8 +96,8 @@ if __name__ == "__main__":
     a = argparse.ArgumentParser()
     s = a.add_subparsers(dest="cmd", required=True)
     l = s.add_parser("lister"); l.add_argument("--jours", type=int, default=2); l.add_argument("--non-lus", action="store_true")
-    s.add_parser("lire").add_argument("n", type=int)
-    b = s.add_parser("brouillon"); b.add_argument("n", type=int); b.add_argument("--corps", required=True); b.add_argument("--pj", nargs="*")
+    s.add_parser("lire").add_argument("n")
+    b = s.add_parser("brouillon"); b.add_argument("n"); b.add_argument("--corps", required=True); b.add_argument("--pj", nargs="*")
     x = a.parse_args()
     sys.stdout.reconfigure(encoding="utf-8")
     {"lister": lambda: lister(x.jours, x.non_lus), "lire": lambda: lire(x.n),
