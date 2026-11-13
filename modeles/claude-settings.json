@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "additionalDirectories": ["C:/BK"],
+    "allow": [
+      "Bash(python C:/BK/00_SYSTEME/scripts/outlook.py lister:*)",
+      "Bash(python C:/BK/00_SYSTEME/scripts/outlook.py lire:*)",
+      "Bash(python C:/BK/00_SYSTEME/scripts/outlook.py brouillon:*)",
+      "Bash(python C:/BK/00_SYSTEME/scripts/planning.py:*)",
+      "Bash(python C:/BK/00_SYSTEME/scripts/convertir_texte.py:*)",
+      "Bash(git -C C:/BK/03_TRAVAIL add:*)",
+      "Bash(git -C C:/BK/03_TRAVAIL commit:*)",
+      "Bash(git -C C:/BK/03_TRAVAIL log:*)"
+    ],
+    "deny": [
+      "Edit(C:/BK/01_MIROIR/**)",
+      "Write(C:/BK/01_MIROIR/**)",
+      "Bash(git -C C:/BK/03_TRAVAIL push:*)",
+      "Bash(git -C C:/BK/03_TRAVAIL remote:*)"
+    ]
+  }
+}

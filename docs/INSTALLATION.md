@@ -42,8 +42,7 @@ cd C:\BK\03_TRAVAIL
 git init
 copy C:\BK\00_SYSTEME\modeles\ETAT.md .
 copy C:\BK\00_SYSTEME\modeles\registres\*.csv registres\
-"@C:/BK/00_SYSTEME/CLAUDE.md" | Out-File CLAUDE.md -Encoding utf8   # importe les règles, une seule source
-"_texte/`nlogs/" | Out-File .gitignore -Encoding utf8
+"_texte/`nlogs/`n_cache/" | Out-File .gitignore -Encoding utf8
 git add . ; git commit -m "Initialisation registres"
 ```
 Ne **jamais** faire `git remote add` dans ce dossier.
@@ -54,10 +53,22 @@ PowerShell **utilisateur normal** :
 irm https://claude.ai/install.ps1 | iex
 claude          # première connexion au compte
 ```
-Puis installer l'extension **Claude in Chrome** dans Chrome et se connecter à Outlook Web dans ce même Chrome.
+Permissions (ce qui est autorisé sans demander, et ce qui est interdit) :
+```powershell
+mkdir C:\BK\00_SYSTEME\.claude -Force
+copy C:\BK\00_SYSTEME\modeles\claude-settings.json C:\BK\00_SYSTEME\.claude\settings.json
+```
+
+**Outlook bureau** doit être installé, connecté à la boîte du projet et **ouvert en permanence** : les scripts le lisent en texte et y créent les brouillons (moins de tokens et plus fiable que le navigateur, et les pièces jointes fonctionnent).
+Test : `python C:\BK\00_SYSTEME\scripts\outlook.py lister --jours 1`
+
+En secours seulement : extension **Claude in Chrome** + Outlook Web.
+
+Planning : renseigner le chemin du .mpp puis extraire une première fois :
+`python C:\BK\00_SYSTEME\scripts\planning.py extraire "C:\BK\01_MIROIR\<chemin>\planning.mpp"`
 
 ## 7. Démarrage automatique avec Remote Control
-Le PC doit rester allumé et la session ouverte (Chrome et Outlook ont besoin d'une session interactive) :
+Le PC doit rester allumé et la session ouverte (Outlook a besoin d'une session interactive) :
 ```powershell
 powercfg /change standby-timeout-ac 0
 powercfg /change hibernate-timeout-ac 0
@@ -65,7 +76,7 @@ powercfg /change hibernate-timeout-ac 0
 Créer la tâche au démarrage de session :
 ```powershell
 schtasks /Create /TN "BOSKO\RemoteControl" /SC ONLOGON /RL LIMITED `
-  /TR "powershell -NoProfile -WindowStyle Minimized -Command `"cd C:\BK\03_TRAVAIL; claude remote-control`""
+  /TR "powershell -NoProfile -WindowStyle Minimized -Command `"cd C:\BK\00_SYSTEME; claude remote-control`""
 ```
 Ensuite, depuis le téléphone (app Claude) : se connecter à la session du PC.
 
@@ -75,9 +86,10 @@ $s = "powershell -NoProfile -ExecutionPolicy Bypass -File C:\BK\00_SYSTEME\scrip
 schtasks /Create /TN "BOSKO\Briefing"  /SC WEEKLY /D MON,TUE,WED,THU,FRI /ST 07:30 /TR "$s -Tache briefing"
 schtasks /Create /TN "BOSKO\Recap"     /SC WEEKLY /D MON,TUE,WED,THU,FRI /ST 17:00 /TR "$s -Tache recap"
 schtasks /Create /TN "BOSKO\Hebdo"     /SC WEEKLY /D FRI                 /ST 12:00 /TR "$s -Tache hebdo"
+schtasks /Create /TN "BOSKO\Mails"     /SC WEEKLY /D MON,TUE,WED,THU,FRI /ST 07:00 /RI 30 /DU 12:00 /TR "$s -Tache mails"
 ```
 Résultats dans `C:\BK\04_PUBLIER\<tâche>\`, journaux dans `C:\BK\03_TRAVAIL\logs\`.
 Tester une fois à la main : `schtasks /Run /TN "BOSKO\Briefing"`.
 
-> Les tâches planifiées travaillent sur les **registres et ETAT.md** uniquement (outils limités, pas de navigateur).
-> La lecture des mails Outlook se fait dans la session interactive (Remote Control), qui alimente les registres.
+> **BOSKO\Mails** relève les mails toutes les 30 min (7h–19h) et prépare les brouillons tout seul. Tu n'as plus qu'à relire et envoyer depuis Outlook.
+> Les tâches ne peuvent rien envoyer : `outlook.py` ne contient aucun appel d'envoi.

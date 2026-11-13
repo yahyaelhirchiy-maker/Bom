@@ -9,6 +9,7 @@ Outils de pilotage MOD (AEDGE) — chantier TBRP – Bosko. Python + fichiers, s
 | `CLAUDE.md` | Règles du projet (lues par Claude Code) |
 | `scripts/` | Scripts Python / PowerShell |
 | `modeles/` | Modèles vides : registres, `ETAT.md`, consignes des tâches planifiées |
-| `docs/` | Installation, proposition de registres |
+| `docs/` | Installation, registres |
+| `.claude/skills/` | Procédures (ex. `traiter-mail`) |
 
 Démarrer : [docs/INSTALLATION.md](docs/INSTALLATION.md)
