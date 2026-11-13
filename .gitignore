@@ -46,6 +46,7 @@ _texte/
 ETAT.md
 !modeles/ETAT.md
 contacts*.*
+!modeles/registres/contacts.csv
 
 # --- Secrets ---
 .env

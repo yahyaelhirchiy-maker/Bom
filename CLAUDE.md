@@ -33,3 +33,6 @@ Langue : français. Réponses courtes.
 - Documents : convertis **une seule fois** en texte (`scripts\convertir_texte.py` → `03_TRAVAIL\_texte\`). Lire le `.txt`, jamais l'original.
 - Outlook (Chrome) : lire le **texte** de la page, jamais de captures d'écran sauf nécessité.
 - MS Project : extraire en CSV par script (pywin32), ne pas lire le planning à l'écran.
+
+## Contacts
+`03_TRAVAIL\registres\contacts.csv` : ne le lire que pour préparer un brouillon.
