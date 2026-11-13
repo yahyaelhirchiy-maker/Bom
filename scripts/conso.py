@@ -22,6 +22,8 @@ def n(v):
 def main():
     a = argparse.ArgumentParser(); a.add_argument("--jours", type=int, default=7)
     depuis = (datetime.now() - timedelta(days=a.parse_args().jours)).strftime("%Y-%m-%d")
+    if not F.exists():
+        sys.exit(f"Aucun passage journalisé pour l'instant ({F} absent).")
     t = defaultdict(lambda: [0, 0.0, 0.0, 0.0])  # passages, tokens entrée, tokens sortie, coût
     with open(F, encoding="utf-8-sig") as h:
         for r in csv.DictReader(h, delimiter=";"):

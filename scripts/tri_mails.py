@@ -8,7 +8,6 @@ Un mail n'est marqué « traité » qu'après un passage réussi de Claude :
 si la limite est atteinte, il est repris au passage suivant.
 """
 import csv, json, re, sys
-from datetime import datetime, timedelta
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
@@ -42,24 +41,22 @@ def trier():
     C.mkdir(parents=True, exist_ok=True)
     deja, forces, role = lire_set(TRAITES), lire_set(FORCES), roles()
     # Lus ou non : un mail ouvert sur le téléphone doit quand même être traité.
-    depuis = (datetime.now() - timedelta(days=3)).strftime("%d/%m/%Y %H:%M")
-    items = outlook.ns().GetDefaultFolder(outlook.BOITE_RECEPTION).Items.Restrict(f"[ReceivedTime] >= '{depuis}'")
     ids = json.loads(outlook.CACHE.read_text(encoding="utf-8")) if outlook.CACHE.exists() else {}
     lots = {"delicat": ([], []), "simple": ([], [])}
     ignores = 0
-    for i, m in enumerate(items, 1):
-        if m.Class != 43 or m.EntryID in deja:
+    for i, m in enumerate(outlook.recents(3), 1):
+        if m.EntryID in deja:
             continue
         exp = (outlook.expediteur(m) or "").lower()
         if IGNORER_EXP.search(exp) or IGNORER_OBJ.search(m.Subject or ""):
             ignores += 1
             deja.add(m.EntryID)
             continue
-        texte = (m.Subject or "") + " " + m.Body[:2000]
+        texte = (m.Subject or "") + " " + (m.Body or "")[:2000]
         niv = "delicat" if (m.EntryID in forces or DELICAT.search(texte) or role.get(exp) in ROLES_DELICATS) else "simple"
         n = f"M{i}"
         ids[n] = m.EntryID
-        apercu = " ".join(m.Body.split())[:160]
+        apercu = " ".join((m.Body or "").split())[:160]
         lots[niv][0].append(f"{n} | {m.ReceivedTime:%Y-%m-%d %H:%M} | {exp} | {m.Subject} | {apercu}")
         lots[niv][1].append(m.EntryID)
     outlook.CACHE.write_text(json.dumps(ids), encoding="utf-8")

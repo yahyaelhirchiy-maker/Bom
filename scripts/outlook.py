@@ -9,7 +9,7 @@ Le brouillon est une « Répondre à tous » dans le fil existant, Cc ajoutés
 depuis contacts.csv (cc_systematique = oui), puis ENREGISTRÉ dans Brouillons.
 Ce script ne contient volontairement aucun appel à .Send().
 """
-import argparse, csv, json, re, sys
+import argparse, csv, html, json, re, sys
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -23,6 +23,29 @@ BOITE_RECEPTION, CC = 6, 2
 
 def ns():
     return win32com.client.Dispatch("Outlook.Application").GetNamespace("MAPI")
+
+
+def recu(m):
+    """Date de réception sans fuseau (pywin32 la rend « aware », non comparable à datetime.now())."""
+    return m.ReceivedTime.replace(tzinfo=None)
+
+
+def recents(jours, non_lus=False):
+    """Mails de la boîte de réception des N derniers jours, du plus récent au plus ancien.
+    Pas de Restrict sur la date : son format dépend de la langue de Windows (M/d/yyyy en anglais)."""
+    items = ns().GetDefaultFolder(BOITE_RECEPTION).Items
+    if non_lus:
+        items = items.Restrict("[UnRead] = True")
+    items.Sort("[ReceivedTime]", True)
+    depuis = datetime.now() - timedelta(days=jours)
+    for m in items:
+        try:
+            if recu(m) < depuis:
+                break
+        except AttributeError:  # élément sans date de réception (rapport, etc.)
+            continue
+        if m.Class == 43:  # 43 = mail
+            yield m
 
 
 def expediteur(m):
@@ -45,16 +68,10 @@ def couper_historique(texte):
 
 
 def lister(jours, non_lus):
-    items = ns().GetDefaultFolder(BOITE_RECEPTION).Items
-    items.Sort("[ReceivedTime]", True)
-    depuis = (datetime.now() - timedelta(days=jours)).strftime("%d/%m/%Y %H:%M")
-    filtre = f"[ReceivedTime] >= '{depuis}'" + (" AND [UnRead] = True" if non_lus else "")
     ids = {k: v for k, v in (json.loads(CACHE.read_text(encoding="utf-8")) if CACHE.exists() else {}).items() if k.startswith("M")}
-    for i, m in enumerate(items.Restrict(filtre), 1):
-        if m.Class != 43:  # 43 = mail
-            continue
+    for i, m in enumerate(recents(jours, non_lus), 1):
         ids[str(i)] = m.EntryID
-        apercu = " ".join(m.Body.split())[:160]
+        apercu = " ".join((m.Body or "").split())[:160]
         pj = f" [PJ:{m.Attachments.Count}]" if m.Attachments.Count else ""
         print(f"{i} | {m.ReceivedTime:%Y-%m-%d %H:%M} | {expediteur(m)} | {m.Subject}{pj} | {apercu}")
     CACHE.parent.mkdir(parents=True, exist_ok=True)
@@ -83,9 +100,12 @@ def brouillon(n, corps, pjs):
             if c["cc_systematique"].strip().lower() == "oui" and c["email"].lower() not in deja:
                 r.Recipients.Add(c["email"]).Type = CC
     r.Recipients.ResolveAll()
-    texte = Path(corps).read_text(encoding="utf-8")
-    html = "".join(f"<p>{l}</p>" for l in texte.split("\n\n")).replace("\n", "<br>")
-    r.HTMLBody = f'<div style="font-family:Calibri;font-size:11pt">{html}</div>' + r.HTMLBody
+    texte = Path(corps).read_text(encoding="utf-8-sig").strip()
+    paras = "".join(f"<p>{html.escape(l)}</p>" for l in texte.split("\n\n")).replace("\n", "<br>")
+    bloc = f'<div style="font-family:Calibri;font-size:11pt">{paras}</div>'
+    # Dans le <body> du fil (avant <html>, Outlook peut l'ignorer ou mal l'afficher).
+    corps_fil, n = re.subn(r"(<body[^>]*>)", lambda x: x.group(1) + bloc, r.HTMLBody, count=1, flags=re.I)
+    r.HTMLBody = corps_fil if n else bloc + r.HTMLBody
     for p in pjs or []:
         r.Attachments.Add(str(Path(p).resolve()))
     r.Save()  # Brouillons. Jamais Send().

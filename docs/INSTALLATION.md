@@ -8,6 +8,8 @@ winget install -e --id Python.Python.3.12
 winget install -e --id Git.Git
 ```
 Fermer puis rouvrir PowerShell, vérifier : `python --version` et `git --version`.
+Sans droits admin : `winget install -e --id Python.Python.3.12 --scope user` suffit.
+Si `python --version` affiche « Python was not found » : c'est le raccourci du Microsoft Store ; rouvrir PowerShell après l'installation (Python 3.12 passe alors devant).
 
 ## 2. Chemins longs (SharePoint produit des chemins > 260 caractères)
 ```powershell
@@ -16,6 +18,7 @@ New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" `
 git config --system core.longpaths true
 ```
 Redémarrer le PC.
+Vérifier d'abord : si `(Get-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem").LongPathsEnabled` vaut déjà 1, ne rien faire côté Windows ; pour Git, `git config --global core.longpaths true` (sans admin) suffit.
 
 ## 3. Arborescence D:\BK
 ```powershell
@@ -35,6 +38,7 @@ Tester le pilotage MS Project (pywin32) :
 ```powershell
 python -c "import win32com.client as w; print(w.Dispatch('MSProject.Application').Version)"
 ```
+Erreur `Invalid class string` = MS Project (bureau) n'est pas installé sur ce PC : `planning.py extraire` ne peut pas tourner sans lui.
 
 ## 5. Dépôt local des registres (jamais poussé sur GitHub)
 ```powershell
@@ -59,7 +63,9 @@ mkdir D:\BK\00_SYSTEME\.claude -Force
 copy D:\BK\00_SYSTEME\modeles\claude-settings.json D:\BK\00_SYSTEME\.claude\settings.json
 ```
 
-**Outlook bureau** doit être installé, connecté à la boîte du projet et **ouvert en permanence** : les scripts le lisent en texte et y créent les brouillons (moins de tokens et plus fiable que le navigateur, et les pièces jointes fonctionnent).
+L'application Claude (bureau) ne fournit pas la commande `claude` : l'installation ci-dessus reste nécessaire pour les tâches planifiées.
+
+**Outlook bureau (classique, pas le « nouvel Outlook »)** doit être installé, connecté à la boîte du projet et **ouvert en permanence** : les scripts le lisent en texte et y créent les brouillons (moins de tokens et plus fiable que le navigateur, et les pièces jointes fonctionnent).
 Test : `python D:\BK\00_SYSTEME\scripts\outlook.py lister --jours 1`
 
 En secours seulement : extension **Claude in Chrome** + Outlook Web.

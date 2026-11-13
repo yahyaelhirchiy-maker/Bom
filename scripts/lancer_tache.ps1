@@ -1,4 +1,4 @@
-# Lance une tâche planifiée Claude Code (briefing, recap, hebdo, mails).
+﻿# Lance une tâche planifiée Claude Code (briefing, recap, hebdo, mails).
 # Usage : powershell -ExecutionPolicy Bypass -File lancer_tache.ps1 -Tache mails
 #
 # - Modèle choisi par tâche dans modeles\routage.json (le moins cher qui suffit).
@@ -8,7 +8,10 @@
 # - Aucun envoi de mail possible (outils limités, outlook.py n'a pas d'envoi).
 param([Parameter(Mandatory)][ValidateSet("briefing","recap","hebdo","mails")][string]$Tache)
 
-[Console]::OutputEncoding = [Text.Encoding]::UTF8
+# PowerShell 5.1 : UTF-8 sans BOM partout (sortie de claude/python, entrée de claude, journaux >>).
+$Utf8 = New-Object Text.UTF8Encoding $false
+[Console]::OutputEncoding = $Utf8; [Console]::InputEncoding = $Utf8; $OutputEncoding = $Utf8
+$PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
 $Systeme = "D:\BK\00_SYSTEME"; $Travail = "D:\BK\03_TRAVAIL"; $Scripts = "$Systeme\scripts"
 $Sortie  = "D:\BK\04_PUBLIER\$Tache"
 $Date    = Get-Date -Format "yyyy-MM-dd_HHmm"
@@ -29,7 +32,8 @@ function Journal($cle, $modele, $voie, $j) {
 }
 
 function Appel($consigne, $modele) {
-  $brut = claude -p $consigne --model $modele --output-format json --add-dir "D:\BK" --allowedTools $Outils 2>> $Log
+  # Consigne par l'entrée standard : en argument, PowerShell 5.1 casse les guillemets des objets de mail.
+  $brut = $consigne | claude -p --model $modele --output-format json --add-dir "D:\BK" --allowedTools $Outils 2>> $Log
   try { return ($brut -join "`n") | ConvertFrom-Json } catch { ($brut -join "`n") | Out-File $Log -Append; return $null }
 }
 

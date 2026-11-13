@@ -37,6 +37,7 @@ LECTEURS = {".pdf": lire_pdf, ".docx": lire_docx, ".xlsx": lire_xlsx, ".xlsm": l
 
 
 def main():
+    sys.stdout.reconfigure(encoding="utf-8")  # noms de fichiers accentués, sortie redirigée en tâche planifiée
     if len(sys.argv) < 2:
         sys.exit(__doc__)
     source = Path(sys.argv[1])
