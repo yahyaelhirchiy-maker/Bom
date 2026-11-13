@@ -1,0 +1,63 @@
+# ============================================================
+# Ce dépôt ne contient AUCUNE donnée projet (C:\BK).
+# Seuls le code, les modèles vides et les règles sont versionnés.
+# ============================================================
+
+# --- Dossiers de données C:\BK (si le dépôt est cloné au mauvais endroit) ---
+01_MIROIR/
+02_ENTRANT/
+03_TRAVAIL/
+04_PUBLIER/
+_texte/
+**/BK/
+
+# --- Fichiers de données projet ---
+*.pdf
+*.msg
+*.eml
+*.pst
+*.ost
+*.mpp
+*.mpt
+*.xls
+*.xlsx
+*.xlsm
+*.doc
+*.docx
+*.ppt
+*.pptx
+*.dwg
+*.dxf
+*.zip
+*.7z
+*.rar
+*.jpg
+*.jpeg
+*.png
+*.heic
+
+# Données textuelles hors modèles
+*.csv
+*.json
+!modeles/**/*.csv
+!modeles/**/*.json
+
+# État et contacts réels (restent sur le PC)
+ETAT.md
+!modeles/ETAT.md
+contacts*.*
+
+# --- Secrets ---
+.env
+*.key
+*.pem
+
+# --- Python / système ---
+__pycache__/
+*.pyc
+.venv/
+venv/
+.claude/settings.local.json
+Thumbs.db
+desktop.ini
+~$*
