@@ -1,6 +1,6 @@
 """Convertit une seule fois les documents (PDF, DOCX, XLSX) en texte.
 
-Usage :  python convertir_texte.py C:\\BK\\02_ENTRANT [C:\\BK\\03_TRAVAIL\\_texte]
+Usage :  python convertir_texte.py D:\\BK\\02_ENTRANT [D:\\BK\\03_TRAVAIL\\_texte]
 
 - Ne lit jamais deux fois le même fichier : si le .txt existe et est plus
   récent que l'original, il est ignoré.
@@ -9,7 +9,7 @@ Usage :  python convertir_texte.py C:\\BK\\02_ENTRANT [C:\\BK\\03_TRAVAIL\\_text
 import sys
 from pathlib import Path
 
-SORTIE_DEFAUT = Path(r"C:\BK\03_TRAVAIL\_texte")
+SORTIE_DEFAUT = Path(r"D:\BK\03_TRAVAIL\_texte")
 
 
 def lire_pdf(p):

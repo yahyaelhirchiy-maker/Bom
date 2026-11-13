@@ -9,14 +9,14 @@
 param([Parameter(Mandatory)][ValidateSet("briefing","recap","hebdo","mails")][string]$Tache)
 
 [Console]::OutputEncoding = [Text.Encoding]::UTF8
-$Systeme = "C:\BK\00_SYSTEME"; $Travail = "C:\BK\03_TRAVAIL"; $Scripts = "$Systeme\scripts"
-$Sortie  = "C:\BK\04_PUBLIER\$Tache"
+$Systeme = "D:\BK\00_SYSTEME"; $Travail = "D:\BK\03_TRAVAIL"; $Scripts = "$Systeme\scripts"
+$Sortie  = "D:\BK\04_PUBLIER\$Tache"
 $Date    = Get-Date -Format "yyyy-MM-dd_HHmm"
 $Log     = "$Travail\logs\${Tache}_$Date.log"
 New-Item -ItemType Directory -Force -Path $Sortie, "$Travail\logs" | Out-Null
 $Routage = Get-Content "$Systeme\modeles\routage.json" -Raw -Encoding UTF8 | ConvertFrom-Json
-$Outils  = "Read,Grep,Glob,Write,Edit,Skill,Bash(python C:/BK/00_SYSTEME/scripts/*)," +
-           "Bash(git -C C:/BK/03_TRAVAIL add:*),Bash(git -C C:/BK/03_TRAVAIL commit:*),Bash(git -C C:/BK/03_TRAVAIL log:*)"
+$Outils  = "Read,Grep,Glob,Write,Edit,Skill,Bash(python D:/BK/00_SYSTEME/scripts/*)," +
+           "Bash(git -C D:/BK/03_TRAVAIL add:*),Bash(git -C D:/BK/03_TRAVAIL commit:*),Bash(git -C D:/BK/03_TRAVAIL log:*)"
 Set-Location $Systeme   # CLAUDE.md, skills et permissions sont ici
 
 function Journal($cle, $modele, $voie, $j) {
@@ -29,7 +29,7 @@ function Journal($cle, $modele, $voie, $j) {
 }
 
 function Appel($consigne, $modele) {
-  $brut = claude -p $consigne --model $modele --output-format json --add-dir "C:\BK" --allowedTools $Outils 2>> $Log
+  $brut = claude -p $consigne --model $modele --output-format json --add-dir "D:\BK" --allowedTools $Outils 2>> $Log
   try { return ($brut -join "`n") | ConvertFrom-Json } catch { ($brut -join "`n") | Out-File $Log -Append; return $null }
 }
 
@@ -47,7 +47,7 @@ function Lancer($cle, $consigne) {
     if ($j -and -not $j.is_error) { Journal $cle $env:OMNIROUTE_MODELE "secours" $j; return "[SECOURS - modèle gratuit, à relire]`n" + $j.result }
   }
   $raison = if ($limite) { "limite atteinte, reprise au prochain passage" } else { "erreur, voir $Log" }
-  "$Date ; $cle ; $raison" | Out-File "C:\BK\04_PUBLIER\en_attente.txt" -Append -Encoding utf8
+  "$Date ; $cle ; $raison" | Out-File "D:\BK\04_PUBLIER\en_attente.txt" -Append -Encoding utf8
   return $null
 }
 

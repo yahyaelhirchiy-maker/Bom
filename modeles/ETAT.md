@@ -1,5 +1,5 @@
 # ÉTAT — TBRP Bosko
-<!-- Fichier compact. À copier dans C:\BK\03_TRAVAIL\ETAT.md.
+<!-- Fichier compact. À copier dans D:\BK\03_TRAVAIL\ETAT.md.
      Mettre à jour seulement quand quelque chose change. 60 lignes max. -->
 
 Mis à jour : AAAA-MM-JJ HH:MM

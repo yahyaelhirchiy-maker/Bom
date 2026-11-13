@@ -15,7 +15,7 @@ from pathlib import Path
 
 import win32com.client
 
-TRAVAIL = Path(r"C:\BK\03_TRAVAIL")
+TRAVAIL = Path(r"D:\BK\03_TRAVAIL")
 CACHE = TRAVAIL / "_cache" / "outlook_ids.json"
 CONTACTS = TRAVAIL / "registres" / "contacts.csv"
 BOITE_RECEPTION, CC = 6, 2

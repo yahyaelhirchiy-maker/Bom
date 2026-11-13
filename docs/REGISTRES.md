@@ -1,6 +1,6 @@
 # Registres — colonnes (v1, ajustables quand les vrais fichiers seront vus)
 
-Modèles vides : `modeles/registres/*.csv` → à copier dans `C:\BK\03_TRAVAIL\registres\`.
+Modèles vides : `modeles/registres/*.csv` → à copier dans `D:\BK\03_TRAVAIL\registres\`.
 
 ## Format (choisi pour économiser les tokens)
 - **CSV** plutôt que JSON : le nom des colonnes n'apparaît qu'une fois (JSON le répète à chaque ligne, soit 2 à 3 fois plus de tokens).

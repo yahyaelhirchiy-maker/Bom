@@ -1,4 +1,4 @@
-"""Combien coûte quoi : résumé de C:\\BK\\03_TRAVAIL\\logs\\consommation.csv.
+"""Combien coûte quoi : résumé de D:\\BK\\03_TRAVAIL\\logs\\consommation.csv.
 
   python conso.py [--jours 7]
 
@@ -9,7 +9,7 @@ from collections import defaultdict
 from datetime import datetime, timedelta
 from pathlib import Path
 
-F = Path(r"C:\BK\03_TRAVAIL\logs\consommation.csv")
+F = Path(r"D:\BK\03_TRAVAIL\logs\consommation.csv")
 
 
 def n(v):

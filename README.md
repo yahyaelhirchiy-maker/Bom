@@ -2,7 +2,7 @@
 
 Outils de pilotage MOD (AEDGE) — chantier TBRP – Bosko. Python + fichiers, sans serveur.
 
-**Ce dépôt ne contient aucune donnée projet.** Les données vivent dans `C:\BK` sur le PC.
+**Ce dépôt ne contient aucune donnée projet.** Les données vivent dans `D:\BK` sur le PC.
 
 | Dossier | Contenu |
 |---|---|

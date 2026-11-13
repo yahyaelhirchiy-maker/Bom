@@ -1,19 +1,19 @@
 """MS Project en texte (pywin32). Ouvre le .mpp en LECTURE SEULE, ne l'enregistre jamais.
 
-  python planning.py extraire C:\\BK\\01_MIROIR\\...\\planning.mpp
-      -> C:\\BK\\03_TRAVAIL\\planning\\taches.csv (seulement si le .mpp a changé)
+  python planning.py extraire D:\\BK\\01_MIROIR\\...\\planning.mpp
+      -> D:\\BK\\03_TRAVAIL\\planning\\taches.csv (seulement si le .mpp a changé)
   python planning.py lot "verrière"
       -> tâches dont le chemin contient le mot-clé, en texte compact
   python planning.py lot "verrière" --xlsx
-      -> en plus, extrait Excel dans C:\\BK\\04_PUBLIER\\pj\\ (pièce jointe)
+      -> en plus, extrait Excel dans D:\\BK\\04_PUBLIER\\pj\\ (pièce jointe)
 """
 import argparse, csv, sys
 from datetime import datetime
 from pathlib import Path
 
-DOSSIER = Path(r"C:\BK\03_TRAVAIL\planning")
+DOSSIER = Path(r"D:\BK\03_TRAVAIL\planning")
 TACHES = DOSSIER / "taches.csv"
-PJ = Path(r"C:\BK\04_PUBLIER\pj")
+PJ = Path(r"D:\BK\04_PUBLIER\pj")
 COLS = ["id", "chemin", "nom", "debut", "fin", "debut_ref", "fin_ref", "ecart_fin_j",
         "avancement", "marge_j", "critique", "ressources"]
 

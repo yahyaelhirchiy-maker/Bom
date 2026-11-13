@@ -7,7 +7,7 @@ Principe commun : **Python détecte gratuitement, Claude n'est réveillé que po
 Installation, lecture Outlook, planning MS Project, brouillons, tri des mails, modèle par tâche, consommation.
 
 ## 1. Robustesse (avant tout le reste)
-- **Sauvegarde quotidienne** de `C:\BK\03_TRAVAIL` vers un second disque (robocopy). Aujourd'hui les registres n'existent que sur un seul PC.
+- **Sauvegarde quotidienne** de `D:\BK\03_TRAVAIL` vers un second disque (robocopy). Aujourd'hui les registres n'existent que sur un seul PC.
 - **Surveillance** : Outlook fermé, tâche en échec, PC redémarré par Windows Update → relance automatique, et une ligne « santé du système » en tête du briefing.
 - Ouverture de session automatique après redémarrage, heures d'activité Windows Update réglées.
 

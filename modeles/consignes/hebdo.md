@@ -7,5 +7,5 @@ Rapport hebdomadaire (vendredi 12h), TBRP Bosko. Respecte CLAUDE.md.
    - Consultations en cours.
    - Décisions prises / attendues.
    - Actions et relances ouvertes.
-3. Ajoute en annexe la consommation de la semaine : `python C:/BK/00_SYSTEME/scripts/conso.py --jours 7` (5 lignes max, et une recommandation si une tâche coûte trop).
+3. Ajoute en annexe la consommation de la semaine : `python D:/BK/00_SYSTEME/scripts/conso.py --jours 7` (5 lignes max, et une recommandation si une tâche coûte trop).
 4. Chaque chiffre cite sa source et son statut (vérifié / à confirmer / bloqué).
