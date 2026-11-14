@@ -18,7 +18,7 @@ Règles absolues :
    - mail délicat (montant, décompte, avenant, pénalité, réclamation, litige, engagement) : brouillon d'attente prudent et alerte dans le compte rendu ;
    - pièce jointe demandée : ne pas tenter de l'ajouter ; cherche le document dans D:\BK\03_TRAVAIL\_texte\038 (la 1re ligne SOURCE donne le chemin de l'original) et indique dans le compte rendu le chemin de l'original à joindre à la main ;
    - s'il fait avancer un point de chantier ou une décision MO : mets à jour D:\BK\03_TRAVAIL\pilotage\tbrp_state.json (statut, observations, entrée datée dans historique, ou nouveau point « Nouveau » dans la bonne section), en gardant le fichier en JSON valide UTF-8 ; une autre information utile va dans le registre CSV concerné avec sa source.
-   Le planning MS Project n'est pas disponible sur ce PC : ne donne aucune date que les registres ne justifient pas, signale-le.
+   Planning : `python D:/BK/00_SYSTEME/scripts/planning.py lot "<mot-clé>"` (enveloppe du 10/06, sans dates de référence ; les engagements plus récents sont dans tbrp_state.json). Ne donne aucune date que le planning ou les registres ne justifient pas.
 5. (Fait par le passage lui-même : importer_pilotage.py et digest.py.) Commit local si quelque chose a changé : git -C D:/BK/03_TRAVAIL add -A puis git -C D:/BK/03_TRAVAIL commit -m "Mails <date>". Jamais de push.
 6. Écris D:\BK\03_TRAVAIL\_cache\mails_web_dernier.txt avec la date et l'heure de ce passage.
 7. Écris le compte rendu dans D:\BK\04_PUBLIER\mails\<AAAA-MM-JJ_HHMM>.md : un bloc de 5 lignes par brouillon préparé (format du skill traiter-mail §8), puis une ligne par mail sans suite, puis les points de chantier mis à jour, puis les alertes.

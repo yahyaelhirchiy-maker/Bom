@@ -25,13 +25,50 @@ def d(v):
         return ""  # "NA" = pas de référence
 
 
+def lignes_mpxj(mpp):
+    """Sans MS Project : lecture directe du .mpp par MPXJ (Java portable dans D:\\Outils\\jre21)."""
+    import os
+    os.environ.setdefault("JAVA_HOME", r"D:\Outils\jre21")
+    import jpype, mpxj  # noqa: F401  (mpxj ajoute ses .jar au classpath)
+    if not jpype.isJVMStarted():
+        jpype.startJVM()
+    try:
+        from org.mpxj import TimeUnit
+        from org.mpxj.reader import UniversalProjectReader
+    except ImportError:
+        from net.sf.mpxj import TimeUnit
+        from net.sf.mpxj.reader import UniversalProjectReader
+    p = UniversalProjectReader().read(str(mpp))
+    props = p.getProjectProperties()
+    jour = lambda v: str(v)[:10] if v is not None else ""
+    parents, lignes = {}, []
+    for t in p.getTasks():
+        if not t.getName() or t.getOutlineLevel() is None or int(t.getOutlineLevel()) == 0:
+            continue
+        niv = int(t.getOutlineLevel())
+        parents[niv] = str(t.getName())
+        chemin = " > ".join(parents[i] for i in range(1, niv) if i in parents)
+        fin, fin_ref = jour(t.getFinish()), jour(t.getBaselineFinish())
+        ecart = (datetime.fromisoformat(fin) - datetime.fromisoformat(fin_ref)).days if fin and fin_ref else ""
+        marge = t.getTotalSlack()
+        marge = round(float(marge.convertUnits(TimeUnit.DAYS, props).getDuration()), 1) if marge is not None else ""
+        lignes.append([int(t.getID()), chemin, str(t.getName()).strip(), jour(t.getStart()), fin, jour(t.getBaselineStart()),
+                       fin_ref, ecart, float(t.getPercentageComplete() or 0), marge, "oui" if t.getCritical() else "",
+                       str(t.getResourceNames() or "") if hasattr(t, "getResourceNames") else ""])
+    return lignes
+
+
 def extraire(mpp):
     mpp = Path(mpp)
     if TACHES.exists() and TACHES.stat().st_mtime >= mpp.stat().st_mtime:
         print("Planning déjà à jour, rien à faire.")
         return
     import win32com.client
-    app = win32com.client.Dispatch("MSProject.Application")
+    try:
+        app = win32com.client.Dispatch("MSProject.Application")
+    except Exception:  # MS Project absent : lecture directe du fichier
+        ecrire(mpp, lignes_mpxj(mpp))
+        return
     app.Visible = False
     app.FileOpenEx(str(mpp), True)  # ReadOnly = True
     p = app.ActiveProject
@@ -48,6 +85,10 @@ def extraire(mpp):
                        t.PercentComplete, round(t.TotalSlack / minutes_jour, 1), "oui" if t.Critical else "",
                        t.ResourceNames])
     app.FileCloseEx(0)  # 0 = ne pas enregistrer
+    ecrire(mpp, lignes)
+
+
+def ecrire(mpp, lignes):
     DOSSIER.mkdir(parents=True, exist_ok=True)
     with open(TACHES, "w", encoding="utf-8-sig", newline="") as f:
         w = csv.writer(f, delimiter=";")

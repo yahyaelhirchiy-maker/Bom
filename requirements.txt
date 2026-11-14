@@ -2,3 +2,5 @@ pywin32; sys_platform == "win32"
 pypdf
 python-docx
 openpyxl
+mpxj
+jpype1

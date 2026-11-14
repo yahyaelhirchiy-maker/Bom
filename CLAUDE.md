@@ -54,7 +54,7 @@ Procédure complète : skill `traiter-mail`. Objectif : brouillon prêt à envoy
 - Documents : convertis **une seule fois** en texte (`scripts\convertir_texte.py` → `03_TRAVAIL\_texte\`). Lire le `.txt`, jamais l'original.
 - Outlook : passer par `scripts\outlook.py` (texte, historique coupé). Chrome seulement en secours, en lisant le texte, jamais par captures.
 - **PC actuel : Outlook classique ne se connecte pas au compte AEDGE.** Lire et préparer les brouillons dans Outlook Web, via le navigateur intégré de Claude (texte seulement), voir skill `traiter-mail` §0. Pas de tri automatique des mails dans ce cas : traitement à la demande.
-- MS Project : `scripts\planning.py extraire` (une fois, si le .mpp a changé), puis `planning.py lot "<mot>"` pour ne lire que le lot utile.
+- MS Project : `scripts\planning.py extraire "<.mpp>"` (une fois, si le .mpp a changé), puis `planning.py lot "<mot>"` pour ne lire que le lot utile. MS Project n'est pas installé : le .mpp est lu directement (MPXJ + Java portable `D:\Outils\jre21`). Planning de référence : `01_MIROIR\OneDrive - AEDGE Partners\038\04. Construction\02. Planning\01. Planning\Simulation planning\260610.TBRP.Planning enveloppe Màj.mpp` (enveloppe du 10/06, sans dates de référence) ; prendre un .mpp plus récent s'il apparaît dans ce dossier.
 
 ## Contacts et messages vocaux
 - `registres\contacts.csv` : ne le lire que pour préparer un brouillon.
@@ -64,6 +64,7 @@ Procédure complète : skill `traiter-mail`. Objectif : brouillon prêt à envoy
 - Modèle par tâche : `modeles\routage.json` (le moins cher qui suffit ; Opus pour le délicat).
 - Tâches automatiques journalisées dans `03_TRAVAIL\logs\consommation.csv` ; résumé : `scripts\conso.py`.
 - Une réponse marquée `[SECOURS]` vient d'un modèle gratuit : la relire avant tout usage.
+- Secours local : `scripts\secours.py` (Ollama sur le PC, tâches `BOSKO\Secours_matin` 8h45 et `Secours_apres_midi` 15h15) écrit un briefing/récap `[SECOURS – modèle local, à relire]` si le passage Claude a manqué ; pas de mails ni de notes traités.
 
 ## Notes dictées de Yahya (`D:\BK\02_ENTRANT\notes_en_attente.md`)
 - Une autre session ajoute les notes telles quelles, en blocs `## AAAA-MM-JJ HH:MM – BOSKO` ou `– OASIS`. **Chaque passage** (matin et après-midi) les lit d'abord.

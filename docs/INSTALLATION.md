@@ -38,7 +38,8 @@ Tester le pilotage MS Project (pywin32) :
 ```powershell
 python -c "import win32com.client as w; print(w.Dispatch('MSProject.Application').Version)"
 ```
-Erreur `Invalid class string` = MS Project (bureau) n'est pas installé sur ce PC : `planning.py extraire` ne peut pas tourner sans lui.
+Erreur `Invalid class string` = MS Project (bureau) n'est pas installé. Sans lui, `planning.py extraire` lit le .mpp directement avec MPXJ :
+`python -m pip install mpxj jpype1`, plus un Java portable (sans droits admin) : décompresser le JRE 21 Temurin (https://adoptium.net, zip Windows x64) dans `D:\Outils\jre21` et définir `JAVA_HOME` sur ce dossier (variable utilisateur).
 
 ## 5. Dépôt local des registres (jamais poussé sur GitHub)
 ```powershell
@@ -97,27 +98,20 @@ Livrables : `D:\BK_PUBLIER\<briefing|mails|hebdo|cr|odj>\`. Page : https://clau
 
 À régler dans l'appli, pour **chaque** tâche : modèle **Sonnet**, puis **Run now** une fois pour valider les autorisations.
 `bosko-publier` est désactivée. Les tâches Windows `BOSKO\Briefing`, `Recap`, `Hebdo` sont supprimées. Reste `BOSKO\Sauvegarde` (sans Claude).
-`scripts\lancer_tache.ps1` n'est plus utilisé (gardé pour un éventuel retour en tâche Windows ou le secours OmniRoute).
+`scripts\lancer_tache.ps1` n'est plus utilisé (gardé pour un éventuel retour en tâche Windows ; le secours est désormais `secours.py`).
 
-## 9. Secours OmniRoute (quand la limite Claude est atteinte)
-Fonctionnement : chaque tâche a un modèle Claude (`modeles\routage.json`). Si la limite est atteinte :
-- tâche avec `"secours": true` (récap, briefing, mails simples) → relancée via **OmniRoute** sur un modèle gratuit, réponse marquée `[SECOURS]` ;
-- tâche avec `"secours": false` (mails délicats, rapport hebdo) → **mise en attente** dans `04_PUBLIER\en_attente.txt`, reprise au passage suivant (la limite Claude se réinitialise par fenêtre de quelques heures).
-
-⚠ **Confidentialité.** Les fournisseurs gratuits peuvent conserver ou réutiliser ce qu'on leur envoie, et les tâches contiennent des données du projet.
-Configurer dans OmniRoute, dans l'ordre : 1) un **modèle local** (Ollama, sur ce PC : gratuit et rien ne sort), 2) seulement ensuite un fournisseur gratuit en ligne, en connaissance de cause.
-Ne **pas** brancher l'abonnement Claude dans OmniRoute : Claude Code reste connecté directement ; OmniRoute ne sert que de secours.
-
-Installation (à faire ensemble, d'après le README officiel du projet OmniRoute sur GitHub) :
-1. Installer OmniRoute et, si possible, Ollama + un modèle adapté à la carte graphique du PC.
-2. Dans OmniRoute, créer une route `bosko-secours` (local d'abord), puis noter son adresse et sa clé.
-3. Enregistrer les variables (PowerShell utilisateur) :
-```powershell
-setx OMNIROUTE_URL    "http://localhost:<port>"
-setx OMNIROUTE_KEY    "<clé OmniRoute>"
-setx OMNIROUTE_MODELE "bosko-secours"
-```
-Sans ces variables, il n'y a pas de bascule : les tâches attendent simplement le retour de Claude.
+## 9. Secours local Ollama (quand la limite Claude est atteinte)
+Plus d'OmniRoute ni de fournisseur en ligne : le secours tourne **sur ce PC** (Ollama, gratuit, rien ne sort).
+- Ollama installé par `winget install -e --id Ollama.Ollama` (sans admin), service sur `http://localhost:11434`.
+- Modèle : constante `MODELE` en tête de `scripts\secours.py` (téléchargé avec `ollama pull <modèle>`).
+- Tâches Windows `BOSKO\Secours_matin` (lun–ven 8h45) et `BOSKO\Secours_apres_midi` (lun–ven 15h15), fenêtre cachée :
+  `python D:\BK\00_SYSTEME\scripts\secours.py matin|apres-midi`.
+- Si le passage Claude a déjà écrit son livrable du jour (`04_PUBLIER\briefing` ou `recap`), le secours ne fait rien.
+  Sinon il lance `digest.py`, lit `digest.md`, `ETAT.md` et les notes en attente, et écrit un briefing/récap
+  marqué `[SECOURS – modèle local, à relire]`, plus une ligne dans `04_PUBLIER\en_attente.txt`.
+- **Limite :** le secours ne lit pas les mails, ne fait pas de brouillon, ne met pas à jour la page privée et n'envoie
+  pas de notification. Son briefing reste sur le PC, dans `04_PUBLIER\briefing`. Il ne touche ni aux registres ni aux notes.
+- Test sans rien toucher : `python secours.py matin --sortie <dossier temporaire>`.
 
 ## 10. Suivre la consommation
 - Tâches automatiques : `python D:\BK\00_SYSTEME\scripts\conso.py --jours 7` (aussi en annexe du rapport du vendredi).
