@@ -2,20 +2,45 @@
   "permissions": {
     "additionalDirectories": ["D:/BK"],
     "allow": [
-      "Bash(python D:/BK/00_SYSTEME/scripts/outlook.py lister:*)",
-      "Bash(python D:/BK/00_SYSTEME/scripts/outlook.py lire:*)",
-      "Bash(python D:/BK/00_SYSTEME/scripts/outlook.py brouillon:*)",
-      "Bash(python D:/BK/00_SYSTEME/scripts/planning.py:*)",
-      "Bash(python D:/BK/00_SYSTEME/scripts/convertir_texte.py:*)",
+      "Bash(python D:/BK/00_SYSTEME/scripts/*)",
+      "Bash(python D:\\BK\\00_SYSTEME\\scripts\\*)",
+      "PowerShell(python D:/BK/00_SYSTEME/scripts/*)",
+      "PowerShell(python D:\\BK\\00_SYSTEME\\scripts\\*)",
       "Bash(git -C D:/BK/03_TRAVAIL add:*)",
       "Bash(git -C D:/BK/03_TRAVAIL commit:*)",
-      "Bash(git -C D:/BK/03_TRAVAIL log:*)"
+      "Bash(git -C D:/BK/03_TRAVAIL log:*)",
+      "Bash(git -C D:/BK/03_TRAVAIL status:*)",
+      "Bash(git -C D:/BK/03_TRAVAIL diff:*)",
+      "PowerShell(git -C D:/BK/03_TRAVAIL add*)",
+      "PowerShell(git -C D:/BK/03_TRAVAIL commit*)",
+      "PowerShell(git -C D:/BK/03_TRAVAIL log*)",
+      "PowerShell(git -C D:/BK/03_TRAVAIL status*)",
+      "PowerShell(git -C D:/BK/03_TRAVAIL diff*)",
+      "Bash(date:*)",
+      "PowerShell(Get-Date*)",
+      "Read(//D:/BK/**)",
+      "Edit(//D:/BK/02_ENTRANT/**)",
+      "Write(//D:/BK/02_ENTRANT/**)",
+      "Edit(//D:/BK/03_TRAVAIL/**)",
+      "Write(//D:/BK/03_TRAVAIL/**)",
+      "Edit(//D:/BK/04_PUBLIER/**)",
+      "Write(//D:/BK/04_PUBLIER/**)",
+      "Write(//D:/BK/00_SYSTEME/_page/**)",
+      "mcp__Claude_Browser",
+      "Artifact",
+      "PushNotification",
+      "ToolSearch",
+      "Skill"
     ],
     "deny": [
       "Edit(D:/BK/01_MIROIR/**)",
       "Write(D:/BK/01_MIROIR/**)",
+      "Edit(//D:/BK/01_MIROIR/**)",
+      "Write(//D:/BK/01_MIROIR/**)",
       "Bash(git -C D:/BK/03_TRAVAIL push:*)",
-      "Bash(git -C D:/BK/03_TRAVAIL remote:*)"
+      "Bash(git -C D:/BK/03_TRAVAIL remote:*)",
+      "PowerShell(git -C D:/BK/03_TRAVAIL push*)",
+      "PowerShell(git -C D:/BK/03_TRAVAIL remote*)"
     ]
   }
 }
