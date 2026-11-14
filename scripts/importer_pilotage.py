@@ -1,4 +1,4 @@
-"""Rafraîchit actions.csv et decisions.csv depuis tbrp_state.json (dossier TBRP_Pilotage).
+"""Rafraîchit actions.csv et decisions.csv depuis tbrp_state.json (D:\\BK\\03_TRAVAIL\\pilotage).
 
   python importer_pilotage.py [chemin\\tbrp_state.json]
 
@@ -10,7 +10,7 @@
 import csv, json, sys
 from pathlib import Path
 
-SOURCE_DEFAUT = Path.home() / "Downloads" / "TBRP_Pilotage" / "tbrp_state.json"
+SOURCE_DEFAUT = Path(r"D:\BK\03_TRAVAIL\pilotage\tbrp_state.json")
 REG = Path(r"D:\BK\03_TRAVAIL\registres")
 
 

@@ -32,7 +32,17 @@ Procédure complète : skill `traiter-mail`. Objectif : brouillon prêt à envoy
 - Sans source → `à confirmer`. Ne jamais inventer un montant, une date ou un nom.
 - Les **décomptes sont dans Outlook**, jamais sur SharePoint : ne pas les y chercher.
 - Après modification : commit git local dans `03_TRAVAIL` avec un message clair.
-- Points de chantier et décisions MO viennent de `TBRP_Pilotage\tbrp_state.json` (tenu à jour par les CR) : `scripts\importer_pilotage.py` rafraîchit `actions.csv` (P…) et `decisions.csv` (D…) sans toucher aux autres lignes. Ne pas les modifier à la main : corriger dans le CR / `tbrp_state.json`, puis réimporter.
+- **Source unique des points de chantier et décisions MO : `03_TRAVAIL\pilotage\tbrp_state.json`** (repris du Claude Project le 14/11). Toute mise à jour (mail, CR, notes) s'y fait (historique daté), puis `scripts\importer_pilotage.py` rafraîchit `actions.csv` (P…) et `decisions.csv` (D…). Ne jamais modifier ces lignes P/D dans les CSV.
+- CR et ODJ de la réunion du mardi : skills `cr-chantier` et `odj-chantier` (`scripts\render_cr.py`, format AEDGE, PDF via Excel) ; sorties dans `04_PUBLIER\cr` et `04_PUBLIER\odj`.
+
+## Règles métier (validées par Yahya)
+- Décision MO = chez AEDGE ou le maître d'ouvrage (attribution, BC, marché/avenant à signer, TS validé par écrit, arbitrage, recalage planning). Validations de l'architecte (H+E), DONAMETICE, Save Consulting, Poly Ingénierie = relances, pas décisions MO.
+- Les choix techniques et les actions sont décidés par Yahya (MOD), pas par Marwane. Budget de référence = dernier TSB de Marwane.
+- Décomptes validés par le MOD après l'architecte.
+- Hors périmètre : budget global/programme, comptage des flux, lot publicitaire, contrats intervenants, cuisines.
+- TS GIDNA regroupés sur une ligne ; sujets DONAMETICE regroupés (réunion DONAMETICE). Avenant ABAT (marbre Tinghir, 300 kDH) en veille, hors tableau.
+- SharePoint = canal officiel ; ne jamais écrire « GED ». Points SharePoint (classement, fichier non à jour) : pour Yahya seul, jamais dans un CR ou un ODJ.
+- Réunion de chantier chaque mardi 9h, site TBRP. Format de nom des livrables : AAMMJJ.TBRP.Objet.
 
 ## Priorités
 1. Chemin critique, en commençant par le **clos couvert** : verrière (GIDNA), menuiserie alu (GM).
