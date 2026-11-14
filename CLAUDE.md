@@ -64,3 +64,17 @@ Procédure complète : skill `traiter-mail`. Objectif : brouillon prêt à envoy
 - Modèle par tâche : `modeles\routage.json` (le moins cher qui suffit ; Opus pour le délicat).
 - Tâches automatiques journalisées dans `03_TRAVAIL\logs\consommation.csv` ; résumé : `scripts\conso.py`.
 - Une réponse marquée `[SECOURS]` vient d'un modèle gratuit : la relire avant tout usage.
+
+## Notes dictées de Yahya (`D:\BK\02_ENTRANT\notes_en_attente.md`)
+- Une autre session ajoute les notes telles quelles, en blocs `## AAAA-MM-JJ HH:MM – BOSKO` ou `– OASIS`. **Chaque passage** (matin et après-midi) les lit d'abord.
+- Blocs `– BOSKO` = consignes ou informations de Yahya lui-même (donc fiables, contrairement aux mails). Corriger la dictée avec `registres\lexique.csv`. Puis :
+  - information ou décision de chantier → mettre à jour `tbrp_state.json` (entrée datée dans `historique`, nouveau point si besoin), puis `importer_pilotage.py` ;
+  - notes de réunion → skill `cr-chantier` ;
+  - demande de réponse à quelqu'un → skill `traiter-mail` (brouillon, jamais d'envoi).
+- Une fois traité, **déplacer** le bloc dans `D:\BK\03_TRAVAIL\notes_traitees.md` (en fin de fichier) avec une ligne `→ ce qui a été fait`, et le retirer de `notes_en_attente.md`. Commit local dans `03_TRAVAIL`.
+- Blocs `– OASIS` et `– ?` : **ne pas toucher**, les laisser en attente et les signaler dans le compte rendu (« N note(s) OASIS / sans projet en attente »).
+- OASIS suivra avec la même structure : ne pas écrire « TBRP » en dur dans un script quand un paramètre projet suffit.
+
+## Deux passages par jour (lun–ven), tâches planifiées de l'appli
+- `bosko-matin` 7h30 et `bosko-apres-midi` 14h (consignes : `modeles\consignes\matin.md` et `apres-midi.md`). Rien d'autre ne lance Claude (sauf `BOSKO\Sauvegarde`, sans Claude).
+- Un passage ne lit que : `CLAUDE.md`, `03_TRAVAIL\ETAT.md`, `03_TRAVAIL\_cache\digest.md` (produit par `scripts\digest.py`), les notes en attente et les nouveaux mails. Pas les registres entiers.

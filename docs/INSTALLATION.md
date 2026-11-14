@@ -88,19 +88,16 @@ schtasks /Create /TN "BOSKO\RemoteControl" /SC ONLOGON /RL LIMITED `
 ```
 Ensuite, depuis le téléphone (app Claude) : se connecter à la session du PC.
 
-## 8. Tâches planifiées (jours ouvrés lun.–ven.)
-```powershell
-$s = "powershell -NoProfile -ExecutionPolicy Bypass -File D:\BK\00_SYSTEME\scripts\lancer_tache.ps1"
-schtasks /Create /TN "BOSKO\Briefing"  /SC WEEKLY /D MON,TUE,WED,THU,FRI /ST 07:30 /TR "$s -Tache briefing"
-schtasks /Create /TN "BOSKO\Recap"     /SC WEEKLY /D MON,TUE,WED,THU,FRI /ST 17:00 /TR "$s -Tache recap"
-schtasks /Create /TN "BOSKO\Hebdo"     /SC WEEKLY /D FRI                 /ST 12:00 /TR "$s -Tache hebdo"
-schtasks /Create /TN "BOSKO\Mails"     /SC WEEKLY /D MON,TUE,WED,THU,FRI /ST 07:00 /RI 30 /DU 12:00 /TR "$s -Tache mails"
-```
-Résultats dans `D:\BK\04_PUBLIER\<tâche>\`, journaux dans `D:\BK\03_TRAVAIL\logs\`.
-Tester une fois à la main : `schtasks /Run /TN "BOSKO\Briefing"`.
+## 8. Deux passages par jour (lun.–ven.)
+Depuis le 14/11/2026, **2 sessions Claude par jour ouvré** (avant : 7), en tâches planifiées **de l'appli Claude** (elles ont besoin du navigateur intégré pour Outlook Web) :
+- **BOSKO – Matin** (`bosko-mails`, 7h30) : notes dictées, mails, `importer_pilotage.py`, `digest.py`, briefing (avec « En bref »), publication de la page, notification.
+- **BOSKO – Après-midi** (`bosko-apres-midi`, 14h) : notes, mails, récap court, publication, notification ; le vendredi, + rapport hebdo.
+Consignes : `modeles\consignes\matin.md`, `apres-midi.md`, `mails_web.md`. Un passage ne lit que `CLAUDE.md`, `ETAT.md`, `_cache\digest.md`, les notes en attente et les nouveaux mails.
+Livrables : `D:\BK_PUBLIER\<briefing|mails|hebdo|cr|odj>\`. Page : https://claude.ai/artifact/592VnZ8SfbeMx6JqwDGbBM.
 
-> **BOSKO\Mails** trie les mails toutes les 30 min (7h–19h) en Python, **sans IA** ; Claude n'est réveillé que s'il y a un vrai mail à traiter. Au premier passage, il reprend les 3 derniers jours. Tu n'as plus qu'à relire et envoyer depuis Outlook.
-> Les tâches ne peuvent rien envoyer : `outlook.py` ne contient aucun appel d'envoi.
+À régler dans l'appli, pour **chaque** tâche : modèle **Sonnet**, puis **Run now** une fois pour valider les autorisations.
+`bosko-publier` est désactivée. Les tâches Windows `BOSKO\Briefing`, `Recap`, `Hebdo` sont supprimées. Reste `BOSKO\Sauvegarde` (sans Claude).
+`scripts\lancer_tache.ps1` n'est plus utilisé (gardé pour un éventuel retour en tâche Windows ou le secours OmniRoute).
 
 ## 9. Secours OmniRoute (quand la limite Claude est atteinte)
 Fonctionnement : chaque tâche a un modèle Claude (`modeles\routage.json`). Si la limite est atteinte :

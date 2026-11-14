@@ -6,6 +6,13 @@ Principe commun : **Python détecte gratuitement, Claude n'est réveillé que po
 ## 0. Socle (écrit, à tester sur le PC)
 Installation, lecture Outlook, planning MS Project, brouillons, tri des mails, modèle par tâche, consommation.
 
+## 0 bis. Usage réduit (fait le 14/11/2026)
+- 7 sessions/jour → **2** (matin 7h30, après-midi 14h), tâches de l'appli.
+- `scripts\digest.py` : pré-digestion gratuite (`_cache\digest.md`, 40 lignes) lue à la place des registres.
+- Notes dictées traitées à chaque passage, archivées dans `03_TRAVAIL
+otes_traitees.md` ; blocs OASIS / « ? » laissés en attente.
+- Suite possible : lancer OASIS avec la même structure (paramètre projet de `digest.py`).
+
 ## 1. Robustesse (avant tout le reste)
 - **Sauvegarde quotidienne** de `D:\BK\03_TRAVAIL` vers un second disque (robocopy). Aujourd'hui les registres n'existent que sur un seul PC.
 - **Surveillance** : Outlook fermé, tâche en échec, PC redémarré par Windows Update → relance automatique, et une ligne « santé du système » en tête du briefing.
