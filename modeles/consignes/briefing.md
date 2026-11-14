@@ -1,4 +1,5 @@
 Briefing du matin (7h30), TBRP Bosko. Respecte CLAUDE.md.
+0. Rafraîchis les registres : `python D:/BK/00_SYSTEME/scripts/importer_pilotage.py`, puis, si `git -C D:/BK/03_TRAVAIL status` montre un changement, `git -C D:/BK/03_TRAVAIL add -A` et `git -C D:/BK/03_TRAVAIL commit -m "Import pilotage"`.
 1. Lis ETAT.md, puis seulement les registres modifiés depuis le dernier briefing.
 2. Rends en 1 page max :
    - Chemin critique (clos couvert d'abord : verrière GIDNA, menuiserie alu GM) : jalons, marges, risques.

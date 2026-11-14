@@ -19,7 +19,7 @@ $Log     = "$Travail\logs\${Tache}_$Date.log"
 New-Item -ItemType Directory -Force -Path $Sortie, "$Travail\logs" | Out-Null
 $Routage = Get-Content "$Systeme\modeles\routage.json" -Raw -Encoding UTF8 | ConvertFrom-Json
 $Outils  = "Read,Grep,Glob,Write,Edit,Skill,Bash(python D:/BK/00_SYSTEME/scripts/*)," +
-           "Bash(git -C D:/BK/03_TRAVAIL add:*),Bash(git -C D:/BK/03_TRAVAIL commit:*),Bash(git -C D:/BK/03_TRAVAIL log:*)"
+           "Bash(git -C D:/BK/03_TRAVAIL add:*),Bash(git -C D:/BK/03_TRAVAIL commit:*),Bash(git -C D:/BK/03_TRAVAIL log:*),Bash(git -C D:/BK/03_TRAVAIL status:*)"
 Set-Location $Systeme   # CLAUDE.md, skills et permissions sont ici
 
 function Journal($cle, $modele, $voie, $j) {
