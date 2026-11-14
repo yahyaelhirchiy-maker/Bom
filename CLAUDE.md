@@ -42,6 +42,7 @@ Procédure complète : skill `traiter-mail`. Objectif : brouillon prêt à envoy
 - Mettre `ETAT.md` à jour **seulement si quelque chose change**.
 - Documents : convertis **une seule fois** en texte (`scripts\convertir_texte.py` → `03_TRAVAIL\_texte\`). Lire le `.txt`, jamais l'original.
 - Outlook : passer par `scripts\outlook.py` (texte, historique coupé). Chrome seulement en secours, en lisant le texte, jamais par captures.
+- **PC actuel : Outlook classique ne se connecte pas au compte AEDGE.** Lire et préparer les brouillons dans Outlook Web, via le navigateur intégré de Claude (texte seulement), voir skill `traiter-mail` §0. Pas de tri automatique des mails dans ce cas : traitement à la demande.
 - MS Project : `scripts\planning.py extraire` (une fois, si le .mpp a changé), puis `planning.py lot "<mot>"` pour ne lire que le lot utile.
 
 ## Contacts et messages vocaux

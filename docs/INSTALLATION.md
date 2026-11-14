@@ -70,6 +70,8 @@ Test : `python D:\BK\00_SYSTEME\scripts\outlook.py lister --jours 1`
 
 En secours seulement : extension **Claude in Chrome** + Outlook Web.
 
+Si Outlook classique reste bloqué sur « Adding… » (compte d'entreprise refusé sur un PC personnel) : se connecter à Outlook Web **dans le navigateur intégré de l'appli Claude** (Ctrl+Shift+B), connexion gardée. Les mails sont alors traités à la demande (skill `traiter-mail` §0) ; ne pas créer la tâche planifiée `BOSKO\Mails`, qui a besoin d'Outlook classique.
+
 Planning : renseigner le chemin du .mpp puis extraire une première fois :
 `python D:\BK\00_SYSTEME\scripts\planning.py extraire "D:\BK\01_MIROIR\<chemin>\planning.mpp"`
 
