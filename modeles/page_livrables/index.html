@@ -1,0 +1,108 @@
+<title>BOSKO – Livrables</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Mise en page : une colonne de lecture type « carnet de chantier » ; filtres en bandeau collant, dernier livrable ouvert. */
+:root {
+  --bg: #f3f4f2; --surface: #ffffff; --fg: #1d2326; --muted: #5d676b; --line: #d9dddb;
+  --accent: #1f5f8b; --accent-soft: #e3edf4; --chip: #eceeec;
+  --briefing: #1f5f8b; --mails: #6b4fa0; --recap: #2f7a52; --hebdo: #9a5b12; --cr: #8a3b3b; --odj: #4f6470;
+  --display: "Archivo", "Segoe UI", system-ui, sans-serif;
+  --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #151a1c; --surface: #1d2427; --fg: #e6eaea; --muted: #9aa5a8; --line: #2e383b;
+  --accent: #7fb4dc; --accent-soft: #1f3341; --chip: #263033;
+  --briefing: #7fb4dc; --mails: #b49ce0; --recap: #7cc79f; --hebdo: #e0a861; --cr: #e09a9a; --odj: #a9bcc6;
+  color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #151a1c; --surface: #1d2427; --fg: #e6eaea; --muted: #9aa5a8; --line: #2e383b;
+  --accent: #7fb4dc; --accent-soft: #1f3341; --chip: #263033;
+  --briefing: #7fb4dc; --mails: #b49ce0; --recap: #7cc79f; --hebdo: #e0a861; --cr: #e09a9a; --odj: #a9bcc6;
+  color-scheme: dark }
+* { box-sizing: border-box }
+body { background: var(--bg); color: var(--fg); font: 15px/1.55 var(--body); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg) }
+.wrap { max-width: 760px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 20px 48px }
+header h1 { font: 800 1.6rem/1.15 var(--display); margin: 0; letter-spacing: -0.01em; text-wrap: balance }
+header p { margin: 4px 0 0; color: var(--muted); font-size: 0.86rem }
+header .maj { font-family: var(--mono); font-size: 0.78rem }
+.filtres { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); display: flex; gap: 6px; flex-wrap: wrap; padding-block: 14px 10px; border-bottom: 1px solid var(--line); margin-bottom: 14px }
+.filtres button { font: 500 0.82rem var(--body); border: 1px solid var(--line); background: var(--surface); color: var(--fg); border-radius: 999px; padding: 5px 12px; cursor: pointer }
+.filtres button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--surface) }
+.filtres button:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }
+.liste { display: flex; flex-direction: column; gap: 10px }
+details { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; min-width: 0 }
+summary { list-style: none; cursor: pointer; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; padding: 12px 14px }
+summary::-webkit-details-marker { display: none }
+.type { font: 600 0.7rem var(--body); letter-spacing: 0.06em; text-transform: uppercase; padding: 2px 8px; border-radius: 4px; background: var(--chip); color: var(--t, var(--accent)) }
+.titre { font-weight: 600; flex: 1 1 200px; min-width: 0; overflow-wrap: anywhere }
+.date { font: 0.78rem var(--mono); color: var(--muted); font-variant-numeric: tabular-nums }
+.contenu { padding: 0 16px 16px; border-top: 1px solid var(--line); overflow-wrap: anywhere }
+.contenu h1, .contenu h2, .contenu h3 { font-family: var(--display); line-height: 1.25; margin: 1.1em 0 0.4em; text-wrap: balance }
+.contenu h1 { font-size: 1.2rem } .contenu h2 { font-size: 1.05rem } .contenu h3 { font-size: 0.95rem }
+.contenu ul, .contenu ol { padding-left: 1.2em } .contenu li { margin: 0.2em 0 }
+.contenu code { font: 0.85em var(--mono); background: var(--chip); padding: 1px 4px; border-radius: 3px }
+.contenu .tableau { overflow-x: auto } .contenu table { border-collapse: collapse; font-size: 0.86rem; margin: 0.6em 0 }
+.contenu th, .contenu td { border: 1px solid var(--line); padding: 4px 8px; text-align: left; vertical-align: top }
+.fichier { margin: 12px 0 0; color: var(--muted); font-size: 0.86rem }
+.fichier code { font: 0.8rem var(--mono); color: var(--fg); background: var(--chip); padding: 2px 6px; border-radius: 3px; overflow-wrap: anywhere }
+.vide { color: var(--muted); padding: 24px 0 }
+@media (prefers-reduced-motion: no-preference) { details[open] .contenu { animation: ouvre .18s ease-out } @keyframes ouvre { from { opacity: .4 } to { opacity: 1 } } }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>BOSKO – Livrables</h1>
+    <p>Chantier TBRP – Bosko · briefings, mails, récaps, rapports, CR et ODJ préparés par le Command Center. <span class="maj" id="maj"></span></p>
+  </header>
+  <nav class="filtres" id="filtres" aria-label="Filtrer par type"></nav>
+  <main class="liste" id="liste"><p class="vide">Chargement des livrables…</p></main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+<script>
+const TYPES = [["tous","Tout"],["briefing","Briefing"],["mails","Mails"],["recap","Récap"],["hebdo","Rapport hebdo"],["cr","CR"],["odj","ODJ"]];
+let donnees = [], filtre = "tous";
+try { filtre = localStorage.getItem("bosko-filtre") || "tous" } catch (e) {}
+
+const fmt = iso => { const d = new Date(iso); return isNaN(d) ? iso : d.toLocaleDateString("fr-FR", {weekday:"short", day:"2-digit", month:"2-digit"}) + " " + d.toLocaleTimeString("fr-FR", {hour:"2-digit", minute:"2-digit"}) };
+const md = t => DOMPurify.sanitize(marked.parse(t || "")).replace(/<table/g, '<div class="tableau"><table').replace(/<\/table>/g, "</table></div>");
+
+function filtres() {
+  const nav = document.getElementById("filtres"); nav.innerHTML = "";
+  for (const [k, l] of TYPES) {
+    if (k !== "tous" && !donnees.some(i => i.type === k)) continue;
+    const b = document.createElement("button"); b.type = "button"; b.id = "f-" + k; b.textContent = l;
+    b.setAttribute("aria-pressed", String(k === filtre));
+    b.onclick = () => { filtre = k; try { localStorage.setItem("bosko-filtre", k) } catch (e) {} ; filtres(); liste() };
+    nav.appendChild(b);
+  }
+}
+
+function liste() {
+  const el = document.getElementById("liste"); el.innerHTML = "";
+  const vis = donnees.filter(i => filtre === "tous" || i.type === filtre);
+  if (!vis.length) { el.innerHTML = '<p class="vide">Aucun livrable de ce type pour l’instant. Le prochain arrivera après la tâche programmée correspondante.</p>'; return }
+  vis.forEach((i, n) => {
+    const d = document.createElement("details"); d.id = "l-" + n; if (n === 0) d.open = true;
+    d.style.setProperty("--t", `var(--${i.type})`);
+    const s = document.createElement("summary");
+    s.innerHTML = `<span class="type"></span><span class="titre"></span><span class="date"></span>`;
+    s.querySelector(".type").textContent = i.libelle; s.querySelector(".titre").textContent = i.titre; s.querySelector(".date").textContent = fmt(i.date);
+    const c = document.createElement("div"); c.className = "contenu";
+    if (i.md) c.innerHTML = md(i.md);
+    else { const p = document.createElement("p"); p.className = "fichier"; p.innerHTML = "Document à ouvrir sur le PC : <code></code>"; p.querySelector("code").textContent = i.fichier; c.appendChild(p) }
+    d.append(s, c); el.appendChild(d);
+  });
+}
+
+fetch("livrables.json", {cache: "no-store"}).then(r => { if (!r.ok) throw new Error(r.status); return r.json() }).then(j => {
+  donnees = j.items || []; document.getElementById("maj").textContent = "Mis à jour le " + fmt(j.genere_le) + ".";
+  if (!TYPES.some(([k]) => k === filtre)) filtre = "tous";
+  filtres(); liste();
+}).catch(() => { document.getElementById("liste").innerHTML = '<p class="vide">Les livrables n’ont pas pu être chargés. La page sera de nouveau à jour au prochain passage du Command Center.</p>' });
+</script>
