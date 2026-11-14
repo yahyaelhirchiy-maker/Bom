@@ -32,6 +32,7 @@ Procédure complète : skill `traiter-mail`. Objectif : brouillon prêt à envoy
 - Sans source → `à confirmer`. Ne jamais inventer un montant, une date ou un nom.
 - Les **décomptes sont dans Outlook**, jamais sur SharePoint : ne pas les y chercher.
 - Après modification : commit git local dans `03_TRAVAIL` avec un message clair.
+- Points de chantier et décisions MO viennent de `TBRP_Pilotage\tbrp_state.json` (tenu à jour par les CR) : `scripts\importer_pilotage.py` rafraîchit `actions.csv` (P…) et `decisions.csv` (D…) sans toucher aux autres lignes. Ne pas les modifier à la main : corriger dans le CR / `tbrp_state.json`, puis réimporter.
 
 ## Priorités
 1. Chemin critique, en commençant par le **clos couvert** : verrière (GIDNA), menuiserie alu (GM).
