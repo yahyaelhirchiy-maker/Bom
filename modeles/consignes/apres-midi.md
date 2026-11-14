@@ -8,4 +8,4 @@ Lis seulement : CLAUDE.md, 03_TRAVAIL\ETAT.md, 03_TRAVAIL\_cache\digest.md (celu
 5. VENDREDI seulement : ajoute le rapport hebdo dans 04_PUBLIER\hebdo\<AAAA-MM-JJ>.md (avancement et chemin critique, TSB par lot, décomptes, consultations, décisions, actions ouvertes ; lis les registres tsb/decomptes/consultations ; chaque chiffre cite source et statut ; annexe `python D:/BK/00_SYSTEME/scripts/conso.py --jours 7`, 5 lignes).
 6. Compte rendu des mails dans 04_PUBLIER\mails\<AAAA-MM-JJ_HHMM>.md. Signale les notes OASIS / « ? » en attente.
 7. Mets à jour ETAT.md seulement si quelque chose a changé.
-8. Publication : même procédure que le matin (livrables_page.py, Artifact read + publish, --publie, PushNotification discrète).
+8. Publication : même procédure que le matin, y compris overwrite_unread ["livrables.json"] (livrables_page.py, Artifact read + publish, --publie, PushNotification discrète).
