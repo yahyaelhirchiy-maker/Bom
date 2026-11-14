@@ -19,6 +19,20 @@ TYPES = {"briefing": "Briefing", "mails": "Mails", "recap": "Récap", "hebdo": "
          "cr": "CR de réunion", "odj": "Ordre du jour"}
 
 
+JOURS = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"]
+MOIS = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"]
+
+
+def titre_lisible(libelle, nom, date):
+    """« 2026-11-14_0250 » -> « Briefing du samedi 14 novembre » ; les autres noms restent tels quels."""
+    try:
+        d = datetime.strptime(nom[:15], "%Y-%m-%d_%H%M")
+    except ValueError:
+        return nom
+    moment = f" ({d:%H}h{d:%M})" if libelle == "Mails" else ""
+    return f"{libelle} du {JOURS[d.weekday()]} {d.day} {MOIS[d.month - 1]}{moment}"
+
+
 def items():
     out = []
     for dossier, libelle in TYPES.items():
@@ -31,7 +45,7 @@ def items():
             date = datetime.fromtimestamp(f.stat().st_mtime)
             md = f.read_text(encoding="utf-8-sig") if f.suffix.lower() == ".md" else ""
             out.append({"id": f"{dossier}/{f.name}", "type": dossier, "libelle": libelle,
-                        "titre": f.stem, "date": date.isoformat(timespec="minutes"),
+                        "titre": titre_lisible(libelle, f.stem, date), "date": date.isoformat(timespec="minutes"),
                         "md": md, "fichier": "" if md else str(f)})
     return sorted(out, key=lambda x: x["date"], reverse=True)
 

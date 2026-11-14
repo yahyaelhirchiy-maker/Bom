@@ -1,81 +1,234 @@
 <title>BOSKO – Livrables</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400&display=swap">
 <style>
-/* Mise en page : une colonne de lecture type « carnet de chantier » ; filtres en bandeau collant, dernier livrable ouvert. */
+/* Mise en page : une colonne de lecture ; en tête le dernier briefing à écouter, puis les autres livrables repliés, puis les documents du PC. Barre audio fixe en bas. */
 :root {
-  --bg: #f3f4f2; --surface: #ffffff; --fg: #1d2326; --muted: #5d676b; --line: #d9dddb;
-  --accent: #1f5f8b; --accent-soft: #e3edf4; --chip: #eceeec;
+  --bg: #f2f3f1; --surface: #ffffff; --fg: #1b2124; --muted: #5a6468; --line: #d7dbd8;
+  --accent: #1f5f8b; --accent-fg: #ffffff; --soft: #e4edf3; --chip: #eaece9;
   --briefing: #1f5f8b; --mails: #6b4fa0; --recap: #2f7a52; --hebdo: #9a5b12; --cr: #8a3b3b; --odj: #4f6470;
   --display: "Archivo", "Segoe UI", system-ui, sans-serif;
   --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
   --mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
 }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
-  --bg: #151a1c; --surface: #1d2427; --fg: #e6eaea; --muted: #9aa5a8; --line: #2e383b;
-  --accent: #7fb4dc; --accent-soft: #1f3341; --chip: #263033;
-  --briefing: #7fb4dc; --mails: #b49ce0; --recap: #7cc79f; --hebdo: #e0a861; --cr: #e09a9a; --odj: #a9bcc6;
+  --bg: #13181a; --surface: #1c2326; --fg: #e8ecec; --muted: #9ba6a9; --line: #2d373a;
+  --accent: #82b8e0; --accent-fg: #0f1a22; --soft: #1e3240; --chip: #263034;
+  --briefing: #82b8e0; --mails: #b7a0e3; --recap: #80c9a2; --hebdo: #e2ab66; --cr: #e39e9e; --odj: #aec0ca;
   color-scheme: dark } }
 :root[data-theme="dark"] {
-  --bg: #151a1c; --surface: #1d2427; --fg: #e6eaea; --muted: #9aa5a8; --line: #2e383b;
-  --accent: #7fb4dc; --accent-soft: #1f3341; --chip: #263033;
-  --briefing: #7fb4dc; --mails: #b49ce0; --recap: #7cc79f; --hebdo: #e0a861; --cr: #e09a9a; --odj: #a9bcc6;
+  --bg: #13181a; --surface: #1c2326; --fg: #e8ecec; --muted: #9ba6a9; --line: #2d373a;
+  --accent: #82b8e0; --accent-fg: #0f1a22; --soft: #1e3240; --chip: #263034;
+  --briefing: #82b8e0; --mails: #b7a0e3; --recap: #80c9a2; --hebdo: #e2ab66; --cr: #e39e9e; --odj: #aec0ca;
   color-scheme: dark }
 * { box-sizing: border-box }
-body { background: var(--bg); color: var(--fg); font: 15px/1.55 var(--body); }
-body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg) }
-.wrap { max-width: 760px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 20px 48px }
-header h1 { font: 800 1.6rem/1.15 var(--display); margin: 0; letter-spacing: -0.01em; text-wrap: balance }
-header p { margin: 4px 0 0; color: var(--muted); font-size: 0.86rem }
-header .maj { font-family: var(--mono); font-size: 0.78rem }
-.filtres { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); display: flex; gap: 6px; flex-wrap: wrap; padding-block: 14px 10px; border-bottom: 1px solid var(--line); margin-bottom: 14px }
-.filtres button { font: 500 0.82rem var(--body); border: 1px solid var(--line); background: var(--surface); color: var(--fg); border-radius: 999px; padding: 5px 12px; cursor: pointer }
-.filtres button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--surface) }
-.filtres button:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }
-.liste { display: flex; flex-direction: column; gap: 10px }
-details { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; min-width: 0 }
-summary { list-style: none; cursor: pointer; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; padding: 12px 14px }
+body { background: var(--bg); color: var(--fg); font: 17px/1.6 var(--body) }
+.wrap { max-width: 700px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 22px 120px; display: flex; flex-direction: column; gap: 26px }
+header .marque { font: 800 0.8rem var(--display); letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent) }
+header h1 { font: 800 1.7rem/1.15 var(--display); margin: 4px 0 0; text-wrap: balance }
+header p { margin: 6px 0 0; color: var(--muted); font-size: 0.9rem }
+h2.section { font: 600 0.78rem var(--display); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin: 0 0 10px }
+.type { display: inline-block; font: 600 0.72rem var(--body); letter-spacing: 0.06em; text-transform: uppercase; padding: 2px 8px; border-radius: 4px; background: var(--chip); color: var(--t, var(--accent)) }
+.date { font: 0.8rem var(--mono); color: var(--muted); font-variant-numeric: tabular-nums }
+/* Livrable mis en avant */
+.une { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px 18px 8px; min-width: 0 }
+.une .tete { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center }
+.une h3 { font: 800 1.35rem/1.2 var(--display); margin: 8px 0 14px; text-wrap: balance }
+.ecouter { display: inline-flex; align-items: center; gap: 10px; font: 600 1rem var(--body); background: var(--accent); color: var(--accent-fg); border: 0; border-radius: 999px; padding: 12px 22px; cursor: pointer }
+.ecouter.petit { font-size: 0.85rem; padding: 6px 14px; gap: 6px }
+.ecouter svg { width: 1em; height: 1em; fill: currentColor }
+.ecouter:disabled { opacity: .45; cursor: not-allowed }
+.aide { color: var(--muted); font-size: 0.85rem; margin: 8px 0 0 }
+/* Contenu des livrables */
+.contenu { overflow-wrap: anywhere; min-width: 0 }
+.contenu h1 { display: none }
+.contenu h2 { font: 700 1.08rem/1.3 var(--display); margin: 1.4em 0 0.4em; padding-top: 0.8em; border-top: 1px solid var(--line); text-wrap: balance }
+.contenu h2:first-child { border-top: 0; padding-top: 0; margin-top: 0.4em }
+.contenu h3 { font: 600 1rem var(--display); margin: 1.1em 0 0.3em }
+.contenu p { margin: 0.5em 0 }
+.contenu ul, .contenu ol { padding-left: 1.2em; margin: 0.4em 0 }
+.contenu li { margin: 0.35em 0 }
+.contenu li::marker { color: var(--muted) }
+.contenu strong { font-weight: 600 }
+.contenu code { font: 0.82em var(--mono); background: var(--chip); padding: 1px 5px; border-radius: 3px }
+.contenu .tableau { overflow-x: auto } .contenu table { border-collapse: collapse; font-size: 0.88rem; margin: 0.6em 0 }
+.contenu th, .contenu td { border: 1px solid var(--line); padding: 5px 9px; text-align: left; vertical-align: top }
+/* Liste repliée */
+.filtres { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px }
+.filtres button { font: 500 0.85rem var(--body); border: 1px solid var(--line); background: var(--surface); color: var(--fg); border-radius: 999px; padding: 5px 13px; cursor: pointer }
+.filtres button[aria-pressed="true"] { background: var(--fg); border-color: var(--fg); color: var(--bg) }
+.liste { display: flex; flex-direction: column; gap: 8px }
+details { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; min-width: 0 }
+summary { list-style: none; cursor: pointer; display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; align-items: center; padding: 12px 14px }
 summary::-webkit-details-marker { display: none }
-.type { font: 600 0.7rem var(--body); letter-spacing: 0.06em; text-transform: uppercase; padding: 2px 8px; border-radius: 4px; background: var(--chip); color: var(--t, var(--accent)) }
-.titre { font-weight: 600; flex: 1 1 200px; min-width: 0; overflow-wrap: anywhere }
-.date { font: 0.78rem var(--mono); color: var(--muted); font-variant-numeric: tabular-nums }
-.contenu { padding: 0 16px 16px; border-top: 1px solid var(--line); overflow-wrap: anywhere }
-.contenu h1, .contenu h2, .contenu h3 { font-family: var(--display); line-height: 1.25; margin: 1.1em 0 0.4em; text-wrap: balance }
-.contenu h1 { font-size: 1.2rem } .contenu h2 { font-size: 1.05rem } .contenu h3 { font-size: 0.95rem }
-.contenu ul, .contenu ol { padding-left: 1.2em } .contenu li { margin: 0.2em 0 }
-.contenu code { font: 0.85em var(--mono); background: var(--chip); padding: 1px 4px; border-radius: 3px }
-.contenu .tableau { overflow-x: auto } .contenu table { border-collapse: collapse; font-size: 0.86rem; margin: 0.6em 0 }
-.contenu th, .contenu td { border: 1px solid var(--line); padding: 4px 8px; text-align: left; vertical-align: top }
-.fichier { margin: 12px 0 0; color: var(--muted); font-size: 0.86rem }
-.fichier code { font: 0.8rem var(--mono); color: var(--fg); background: var(--chip); padding: 2px 6px; border-radius: 3px; overflow-wrap: anywhere }
-.vide { color: var(--muted); padding: 24px 0 }
-@media (prefers-reduced-motion: no-preference) { details[open] .contenu { animation: ouvre .18s ease-out } @keyframes ouvre { from { opacity: .4 } to { opacity: 1 } } }
+summary .titre { font-weight: 600; min-width: 0; overflow-wrap: anywhere }
+summary .date { grid-column: 2 }
+details .corps { padding: 2px 16px 16px; border-top: 1px solid var(--line) }
+details .corps .actions { padding-top: 12px }
+.docs { display: flex; flex-direction: column; gap: 6px; margin: 0; padding: 0; list-style: none }
+.docs li { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; font-size: 0.92rem; display: grid; gap: 4px }
+.docs code { font: 0.75rem var(--mono); color: var(--muted); overflow-wrap: anywhere }
+.vide { color: var(--muted) }
+button:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }
+/* Barre de lecture */
+.lecteur { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; background: var(--surface); border-top: 1px solid var(--line); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-top: 10px; padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)) }
+.lecteur .in { max-width: 700px; margin: 0 auto; display: flex; align-items: center; gap: 10px; flex-wrap: wrap }
+.lecteur .quoi { flex: 1 1 180px; min-width: 0; font-size: 0.88rem }
+.lecteur .quoi b { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.lecteur .quoi span { color: var(--muted); font-size: 0.8rem }
+.lecteur button { font: 600 0.9rem var(--body); border: 1px solid var(--line); background: var(--bg); color: var(--fg); border-radius: 999px; padding: 8px 14px; cursor: pointer; min-width: 44px }
+.lecteur button.principal { background: var(--accent); color: var(--accent-fg); border-color: var(--accent) }
+.progression { height: 3px; background: var(--line); border-radius: 2px; margin-bottom: 8px; overflow: hidden; max-width: 700px; margin-inline: auto }
+.progression i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .3s }
+@media (prefers-reduced-motion: reduce) { .progression i { transition: none } }
 </style>
 
 <div class="wrap">
   <header>
-    <h1>BOSKO – Livrables</h1>
-    <p>Chantier TBRP – Bosko · briefings, mails, récaps, rapports, CR et ODJ préparés par le Command Center. <span class="maj" id="maj"></span></p>
+    <div class="marque">BOSKO · TBRP</div>
+    <h1>Livrables du chantier</h1>
+    <p id="maj">Chargement…</p>
   </header>
-  <nav class="filtres" id="filtres" aria-label="Filtrer par type"></nav>
-  <main class="liste" id="liste"><p class="vide">Chargement des livrables…</p></main>
+
+  <section aria-labelledby="t-une">
+    <h2 class="section" id="t-une">À écouter en premier</h2>
+    <article class="une" id="une"><p class="vide">Chargement du dernier briefing…</p></article>
+  </section>
+
+  <section aria-labelledby="t-liste">
+    <h2 class="section" id="t-liste">Tous les livrables</h2>
+    <nav class="filtres" id="filtres" aria-label="Filtrer par type"></nav>
+    <div class="liste" id="liste"></div>
+  </section>
+
+  <section aria-labelledby="t-docs" id="bloc-docs" hidden>
+    <h2 class="section" id="t-docs">Documents à ouvrir sur le PC</h2>
+    <ul class="docs" id="docs"></ul>
+  </section>
+</div>
+
+<div class="lecteur" id="lecteur" hidden>
+  <div class="progression"><i id="barre"></i></div>
+  <div class="in">
+    <div class="quoi"><b id="l-titre"></b><span id="l-etat"></span></div>
+    <button type="button" id="l-pause" class="principal" aria-label="Pause">Pause</button>
+    <button type="button" id="l-vitesse" aria-label="Vitesse de lecture">1×</button>
+    <button type="button" id="l-stop" aria-label="Arrêter la lecture">Arrêter</button>
+  </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
 <script>
 const TYPES = [["tous","Tout"],["briefing","Briefing"],["mails","Mails"],["recap","Récap"],["hebdo","Rapport hebdo"],["cr","CR"],["odj","ODJ"]];
-let donnees = [], filtre = "tous";
+const PLAY = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg>';
+let lus = [], docs = [], filtre = "tous";
 try { filtre = localStorage.getItem("bosko-filtre") || "tous" } catch (e) {}
 
-const fmt = iso => { const d = new Date(iso); return isNaN(d) ? iso : d.toLocaleDateString("fr-FR", {weekday:"short", day:"2-digit", month:"2-digit"}) + " " + d.toLocaleTimeString("fr-FR", {hour:"2-digit", minute:"2-digit"}) };
-const md = t => DOMPurify.sanitize(marked.parse(t || "")).replace(/<table/g, '<div class="tableau"><table').replace(/<\/table>/g, "</table></div>");
+const fmt = iso => { const d = new Date(iso); return isNaN(d) ? iso : d.toLocaleDateString("fr-FR", {weekday:"long", day:"numeric", month:"long"}) + " à " + d.toLocaleTimeString("fr-FR", {hour:"2-digit", minute:"2-digit"}) };
+const html = t => DOMPurify.sanitize(marked.parse(t || "")).replace(/<table/g, '<div class="tableau"><table').replace(/<\/table>/g, "</table></div>");
+
+/* ---------- Lecture à voix haute ---------- */
+const synth = window.speechSynthesis;
+const VITESSES = [1, 1.2, 1.4, 0.9];
+let voix = null, morceaux = [], pos = 0, enCours = false, enPause = false, vitesse = 1, jeton = 0;
+try { vitesse = Number(localStorage.getItem("bosko-vitesse")) || 1 } catch (e) {}
+
+function choisirVoix() {
+  if (!synth) return;
+  const fr = synth.getVoices().filter(v => /^fr/i.test(v.lang));
+  voix = fr.find(v => /fr-FR/i.test(v.lang) && /google|amélie|amelie|thomas|denise|henri|hortense|audrey/i.test(v.name)) || fr.find(v => /fr-FR/i.test(v.lang)) || fr[0] || null;
+}
+if (synth) { choisirVoix(); synth.onvoiceschanged = choisirVoix }
+
+// Transforme le livrable en phrases faciles à écouter : sans chemins de fichiers, tableaux ni symboles.
+function texteAudio(md) {
+  const d = document.createElement("div"); d.innerHTML = html(md);
+  d.querySelectorAll("table, pre").forEach(e => e.remove());
+  d.querySelectorAll("code").forEach(e => { if (/[\\\/]|\.(csv|md|json|py|xlsx|pdf)\b/i.test(e.textContent)) e.remove(); else e.replaceWith(e.textContent) });
+  const blocs = [];
+  d.querySelectorAll("h1, h2, h3, h4, p, li").forEach(e => {
+    if (e.matches("li") && e.querySelector("li")) { const c = e.cloneNode(true); c.querySelectorAll("ul, ol").forEach(x => x.remove()); blocs.push(c.textContent) }
+    else if (!e.closest("li") || e.matches("li")) blocs.push(e.textContent);
+  });
+  const propre = s => s.replace(/\s+/g, " ").replace(/→/g, ", puis ").replace(/≤/g, " inférieur ou égal à ").replace(/≥/g, " supérieur ou égal à ")
+    .replace(/\bHT\b/g, "hors taxe").replace(/\bDH\b/g, "dirhams").replace(/\bkDH\b/g, "mille dirhams").replace(/\bMOD\b/g, "M O D").replace(/\bMO\b/g, "maître d'ouvrage")
+    .replace(/\b(\d{1,2})\/(\d{1,2})\b/g, "$1 / $2").replace(/[*_#`|]/g, "").replace(/\s*[–—]\s*/g, ", ").trim();
+  const out = [];
+  for (let b of blocs.map(propre).filter(Boolean)) {
+    if (!/[.!?:]$/.test(b)) b += ".";
+    // Morceaux courts : certains navigateurs coupent les longues phrases.
+    while (b.length > 220) { let i = b.lastIndexOf(". ", 220); if (i < 60) i = b.lastIndexOf(", ", 220); if (i < 60) i = 220; out.push(b.slice(0, i + 1)); b = b.slice(i + 1).trim() }
+    if (b) out.push(b);
+  }
+  return out;
+}
+
+function majLecteur(titre) {
+  document.getElementById("lecteur").hidden = !enCours;
+  if (titre) document.getElementById("l-titre").textContent = titre;
+  document.getElementById("l-etat").textContent = enPause ? "En pause" : `Lecture · ${Math.min(pos + 1, morceaux.length)} / ${morceaux.length}`;
+  document.getElementById("l-pause").textContent = enPause ? "Reprendre" : "Pause";
+  document.getElementById("l-vitesse").textContent = String(vitesse).replace(".", ",") + "×";
+  document.getElementById("barre").style.width = morceaux.length ? (100 * pos / morceaux.length) + "%" : "0";
+}
+
+function dire() {
+  if (!enCours || pos >= morceaux.length) { arreter(); return }
+  const u = new SpeechSynthesisUtterance(morceaux[pos]), t = ++jeton;  // jeton : ignore la fin d'une phrase annulée
+  u.lang = "fr-FR"; if (voix) u.voice = voix; u.rate = vitesse;
+  u.onend = () => { if (t !== jeton || !enCours || enPause) return; pos++; majLecteur(); dire() };
+  u.onerror = e => { if (t === jeton && e.error !== "interrupted" && e.error !== "canceled") { pos++; dire() } };
+  synth.speak(u); majLecteur();
+}
+
+function ecouter(item) {
+  if (!synth) return;
+  synth.cancel(); morceaux = [`${item.titre}.`, ...texteAudio(item.md)]; pos = 0; enCours = true; enPause = false;
+  majLecteur(item.titre); dire();
+}
+function arreter() { enCours = false; enPause = false; if (synth) synth.cancel(); majLecteur() }
+document.getElementById("l-stop").onclick = arreter;
+document.getElementById("l-pause").onclick = () => {
+  if (!enCours) return;
+  if (enPause) { enPause = false; synth.cancel(); dire() } else { enPause = true; synth.cancel() }
+  majLecteur();
+};
+document.getElementById("l-vitesse").onclick = () => {
+  vitesse = VITESSES[(VITESSES.indexOf(vitesse) + 1) % VITESSES.length] || 1;
+  try { localStorage.setItem("bosko-vitesse", String(vitesse)) } catch (e) {}
+  if (enCours && !enPause) { synth.cancel(); dire() } majLecteur();
+};
+
+function boutonEcouter(item, petit) {
+  const b = document.createElement("button"); b.type = "button"; b.className = "ecouter" + (petit ? " petit" : "");
+  b.innerHTML = PLAY + (petit ? "Écouter" : "Écouter le " + item.libelle.toLowerCase());
+  if (!synth) b.disabled = true; else b.onclick = e => { e.stopPropagation(); ecouter(item) };
+  return b;
+}
+
+/* ---------- Affichage ---------- */
+function une() {
+  const el = document.getElementById("une"); el.innerHTML = "";
+  const item = lus.find(i => i.type === "briefing") || lus[0];
+  if (!item) { el.innerHTML = '<p class="vide">Aucun livrable pour l’instant. Le premier briefing arrivera le prochain jour ouvré à 7h30.</p>'; return }
+  el.style.setProperty("--t", `var(--${item.type})`);
+  const tete = document.createElement("div"); tete.className = "tete";
+  tete.innerHTML = '<span class="type"></span><span class="date"></span>';
+  tete.querySelector(".type").textContent = item.libelle; tete.querySelector(".date").textContent = fmt(item.date);
+  const h = document.createElement("h3"); h.textContent = item.titre;
+  const aide = document.createElement("p"); aide.className = "aide";
+  aide.textContent = synth ? "Lecture à voix haute en français. Garde l’écran allumé pendant l’écoute : certains téléphones coupent la voix écran éteint."
+                           : "La lecture audio n’est pas disponible dans cette appli. Ouvre ce lien dans le navigateur du téléphone (Chrome ou Safari) pour l’écouter.";
+  const c = document.createElement("div"); c.className = "contenu"; c.innerHTML = html(item.md);
+  el.append(tete, h, boutonEcouter(item), aide, c);
+}
 
 function filtres() {
   const nav = document.getElementById("filtres"); nav.innerHTML = "";
   for (const [k, l] of TYPES) {
-    if (k !== "tous" && !donnees.some(i => i.type === k)) continue;
+    if (k !== "tous" && !lus.some(i => i.type === k)) continue;
     const b = document.createElement("button"); b.type = "button"; b.id = "f-" + k; b.textContent = l;
     b.setAttribute("aria-pressed", String(k === filtre));
     b.onclick = () => { filtre = k; try { localStorage.setItem("bosko-filtre", k) } catch (e) {} ; filtres(); liste() };
@@ -85,24 +238,39 @@ function filtres() {
 
 function liste() {
   const el = document.getElementById("liste"); el.innerHTML = "";
-  const vis = donnees.filter(i => filtre === "tous" || i.type === filtre);
-  if (!vis.length) { el.innerHTML = '<p class="vide">Aucun livrable de ce type pour l’instant. Le prochain arrivera après la tâche programmée correspondante.</p>'; return }
+  const vis = lus.filter(i => filtre === "tous" || i.type === filtre);
+  if (!vis.length) { el.innerHTML = '<p class="vide">Rien de ce type pour l’instant.</p>'; return }
   vis.forEach((i, n) => {
-    const d = document.createElement("details"); d.id = "l-" + n; if (n === 0) d.open = true;
-    d.style.setProperty("--t", `var(--${i.type})`);
+    const d = document.createElement("details"); d.id = "l-" + n; d.style.setProperty("--t", `var(--${i.type})`);
     const s = document.createElement("summary");
-    s.innerHTML = `<span class="type"></span><span class="titre"></span><span class="date"></span>`;
+    s.innerHTML = '<span class="type"></span><span class="titre"></span><span class="date"></span>';
     s.querySelector(".type").textContent = i.libelle; s.querySelector(".titre").textContent = i.titre; s.querySelector(".date").textContent = fmt(i.date);
-    const c = document.createElement("div"); c.className = "contenu";
-    if (i.md) c.innerHTML = md(i.md);
-    else { const p = document.createElement("p"); p.className = "fichier"; p.innerHTML = "Document à ouvrir sur le PC : <code></code>"; p.querySelector("code").textContent = i.fichier; c.appendChild(p) }
-    d.append(s, c); el.appendChild(d);
+    const corps = document.createElement("div"); corps.className = "corps";
+    const a = document.createElement("div"); a.className = "actions"; a.appendChild(boutonEcouter(i, true));
+    const c = document.createElement("div"); c.className = "contenu"; c.innerHTML = html(i.md);
+    corps.append(a, c); d.append(s, corps); el.appendChild(d);
+  });
+}
+
+function documents() {
+  const ul = document.getElementById("docs"); ul.innerHTML = "";
+  document.getElementById("bloc-docs").hidden = !docs.length;
+  docs.forEach(i => {
+    const li = document.createElement("li");
+    li.innerHTML = '<span><span class="type"></span> <b></b></span><code></code>';
+    li.style.setProperty("--t", `var(--${i.type})`);
+    li.querySelector(".type").textContent = i.libelle; li.querySelector("b").textContent = i.titre; li.querySelector("code").textContent = i.fichier;
+    ul.appendChild(li);
   });
 }
 
 fetch("livrables.json", {cache: "no-store"}).then(r => { if (!r.ok) throw new Error(r.status); return r.json() }).then(j => {
-  donnees = j.items || []; document.getElementById("maj").textContent = "Mis à jour le " + fmt(j.genere_le) + ".";
+  const tous = j.items || []; lus = tous.filter(i => i.md); docs = tous.filter(i => !i.md);
+  document.getElementById("maj").textContent = "Mis à jour le " + fmt(j.genere_le) + ".";
   if (!TYPES.some(([k]) => k === filtre)) filtre = "tous";
-  filtres(); liste();
-}).catch(() => { document.getElementById("liste").innerHTML = '<p class="vide">Les livrables n’ont pas pu être chargés. La page sera de nouveau à jour au prochain passage du Command Center.</p>' });
+  une(); filtres(); liste(); documents();
+}).catch(() => {
+  document.getElementById("maj").textContent = "";
+  document.getElementById("une").innerHTML = '<p class="vide">Les livrables n’ont pas pu être chargés. La page sera de nouveau à jour au prochain passage du Command Center (8h20, 14h20 ou 17h20).</p>';
+});
 </script>
