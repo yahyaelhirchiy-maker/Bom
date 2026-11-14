@@ -4,3 +4,4 @@ python-docx
 openpyxl
 mpxj
 jpype1
+cryptography
