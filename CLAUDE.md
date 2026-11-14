@@ -6,7 +6,7 @@ Claude Code est lancé depuis `D:\BK\00_SYSTEME` ; les données sont dans `D:\BK
 
 ## Dossiers (PC Windows)
 - `D:\BK\00_SYSTEME` : ce dépôt (code, modèles, règles). **Aucune donnée projet.**
-- `D:\BK\01_MIROIR` : copie SharePoint. **Lecture seule.**
+- `D:\BK\01_MIROIR` : copie SharePoint. **Lecture seule.** Dossier du chantier : `01_MIROIR\OneDrive - AEDGE Partners\038\` (raccourci OneDrive renommé « 038 » pour éviter les chemins trop longs ; ne pas le renommer). Texte converti : `03_TRAVAIL\_texte\038\` (1re ligne `SOURCE:` = chemin de l'original).
 - `D:\BK\02_ENTRANT` : pièces reçues à traiter.
 - `D:\BK\03_TRAVAIL` : registres + `ETAT.md`. Dépôt git **local**, sans remote.
 - `D:\BK\04_PUBLIER` : livrables prêts à diffuser.
