@@ -90,6 +90,6 @@ Procédure complète : skill `traiter-mail`. Objectif : brouillon prêt à envoy
 - OASIS suivra avec la même structure : ne pas écrire « TBRP » en dur dans un script quand un paramètre projet suffit.
 
 ## Deux passages par jour (lun–ven), tâches planifiées de l'appli
-- Le dimanche 19h, `bosko-optimisation` écrit un rapport de pistes (tokens, automatisations, façons d'exécuter) dans `04_PUBLIER\optimisation\` : il propose seulement (consignes `modeles\consignes\optimisation.md`, mesures par `scriptsudit_semaine.py`).
+- Le dimanche 19h, `bosko-optimisation` écrit un rapport de pistes (tokens, automatisations, façons d'exécuter) dans `04_PUBLIER\optimisation\` : il propose seulement (consignes `modeles\consignes\optimisation.md`, mesures par `scripts\audit_semaine.py`).
 - `bosko-matin` 7h30 et `bosko-apres-midi` 14h (consignes : `modeles\consignes\matin.md` et `apres-midi.md`). Rien d'autre ne lance Claude (sauf `BOSKO\Sauvegarde`, sans Claude).
 - Un passage ne lit que : `CLAUDE.md`, `03_TRAVAIL\ETAT.md`, `03_TRAVAIL\_cache\digest.md` (produit par `scripts\digest.py`), les notes en attente et les nouveaux mails. Pas les registres entiers.
