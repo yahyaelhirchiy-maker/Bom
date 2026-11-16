@@ -31,7 +31,7 @@ Cela ajoute les Cc habituels (contacts.csv), joint le PDF et enregistre en Broui
 ## 5. Registres et traces
 - `python D:/BK/00_SYSTEME/scripts/importer_pilotage.py`, puis commit local dans `03_TRAVAIL` : « CR réunion du JJ/MM ».
 - `ETAT.md` si le chemin critique ou une alerte change.
-- Proposer à Yahya seul de classer le CR sur SharePoint (`04. Construction/03. Travaux/10. PV Réunions/1. Réunions de Chantier/`). Ne rien déposer soi-même.
+- SharePoint : rien à faire ici. Le passage SharePoint du soir (skill `sharepoint`) dépose la version **envoyée** du CR dans `04. Construction/03. Travaux/10. PV Réunions/1. Réunions de Chantier/`.
 
 ## 6. Rendre compte
 PDF produit, brouillon prêt, et la liste à vérifier : points mis à jour depuis les mails plutôt que les notes, échéances déduites, formulations durcies.

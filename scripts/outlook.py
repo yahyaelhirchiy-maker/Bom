@@ -152,6 +152,37 @@ def remplir(r, corps, pjs):
     print(f"BROUILLON ENREGISTRÉ : {r.Subject}")
 
 
+def exporter(n, sujet, date, vers, avec_mail, avec_pj):
+    """Enregistre un mail (reçu : N ; envoyé : --envoye "objet") en .msg et/ou ses pièces jointes
+    dans le dossier local `vers` (préparation d'un dépôt SharePoint par sharepoint.py). Ne modifie pas le mail."""
+    m = envoye(sujet, date) if sujet else mail(n)
+    d = Path(vers); d.mkdir(parents=True, exist_ok=True)
+    quand = m.SentOn if sujet else m.ReceivedTime
+    propre = lambda t: re.sub(r'[<>:"/\\|?*\x00-\x1f]', "_", t).strip(" .")[:90]
+    if avec_mail:
+        p = d / f"{quand:%y%m%d}.TBRP.Mail - {propre(m.Subject or 'sans objet')}.msg"
+        m.SaveAs(str(p.resolve()), 9)  # 9 = olMSGUnicode
+        print(f"MAIL : {p}")
+    if avec_pj:
+        for a in m.Attachments:
+            if a.Type != 1:
+                continue  # liens, éléments Outlook
+            nom = a.FileName or "pj"
+            image = nom.lower().endswith((".png", ".jpg", ".jpeg", ".gif", ".bmp"))
+            try:
+                cid = a.PropertyAccessor.GetProperty("http://schemas.microsoft.com/mapi/proptag/0x3712001F")
+            except Exception:
+                cid = ""
+            if image and (cid or re.match(r"(?i)(image\d*|outlook-\w+)\.", nom)):
+                continue  # images collées dans le corps / signatures
+            p = d / propre(nom)
+            i = 2
+            while p.exists():
+                p = d / f"{Path(propre(nom)).stem} ({i}){Path(nom).suffix}"; i += 1
+            a.SaveAsFile(str(p.resolve()))
+            print(f"PJ : {p}")
+
+
 if __name__ == "__main__":
     a = argparse.ArgumentParser()
     s = a.add_subparsers(dest="cmd", required=True)
@@ -162,8 +193,14 @@ if __name__ == "__main__":
     e = s.add_parser("brouillon-envoye", help="répondre à tous sur un mail envoyé par Yahya")
     e.add_argument("sujet"); e.add_argument("--date", help="AAAA-MM-JJ d'envoi"); e.add_argument("--corps", required=True)
     e.add_argument("--pj", nargs="*"); e.add_argument("--objet", help="remplace l'objet de la réponse")
+    xp = s.add_parser("exporter", help="mail en .msg et/ou ses PJ vers un dossier local (dépôt SharePoint)")
+    xp.add_argument("n", nargs="?"); xp.add_argument("--envoye", help="objet d'un mail envoyé par Yahya")
+    xp.add_argument("--date"); xp.add_argument("--vers", required=True)
+    xp.add_argument("--mail", action="store_true"); xp.add_argument("--pj", action="store_true")
     x = a.parse_args()
     sys.stdout.reconfigure(encoding="utf-8")
+    if x.cmd == "exporter":
+        sys.exit(exporter(x.n, x.envoye, x.date, x.vers, x.mail or not x.pj, x.pj))
     {"lister": lambda: lister(x.jours, x.non_lus), "lire": lambda: lire(x.n), "envoyes": lambda: envoyes(x.jours),
      "brouillon": lambda: brouillon(x.n, x.corps, x.pj),
      "brouillon-envoye": lambda: brouillon_envoye(x.sujet, x.date, x.corps, x.pj, x.objet)}[x.cmd]()
