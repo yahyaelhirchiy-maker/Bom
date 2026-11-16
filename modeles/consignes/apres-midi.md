@@ -1,5 +1,6 @@
 Passage de l'APRÈS-MIDI (14h, lun–ven), TBRP Bosko. Réponds en français, court. Respecte CLAUDE.md.
 Lis seulement : CLAUDE.md, 03_TRAVAIL\ETAT.md, 03_TRAVAIL\_cache\digest.md (celui du matin), puis ce qui est demandé ci-dessous.
+0. Tout premier geste : `python D:/BK/00_SYSTEME/scripts/passage_ok.py debut apres-midi`.
 1. Notes : traite D:\BK\02_ENTRANT\notes_en_attente.md selon CLAUDE.md (section « Notes dictées »).
 2. Mails : procédure `modeles/consignes/mails_outlook.md` (Outlook classique par `outlook.py`, texte seulement, brouillons avec PJ, jamais d'envoi ; Outlook Web seulement en secours), depuis le dernier passage.
 2 bis. WhatsApp : procédure `modeles/consignes/whatsapp.md` (Chrome, lecture seule, conversations autorisées uniquement).
@@ -11,3 +12,4 @@ Lis seulement : CLAUDE.md, 03_TRAVAIL\ETAT.md, 03_TRAVAIL\_cache\digest.md (celu
 6. Compte rendu des mails dans 04_PUBLIER\mails\<AAAA-MM-JJ_HHMM>.md. Signale les notes OASIS / « ? » en attente.
 7. Mets à jour ETAT.md seulement si quelque chose a changé.
 8. Publication : même procédure que le matin, y compris overwrite_unread ["livrables.json"] (livrables_page.py, Artifact read + publish, --publie, PushNotification discrète).
+9. Tout dernier geste (même si une étape a échoué : note-le dans le compte rendu) : `python D:/BK/00_SYSTEME/scripts/passage_ok.py fin apres-midi`.

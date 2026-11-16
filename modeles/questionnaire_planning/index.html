@@ -1,0 +1,125 @@
+<title>Engagements planning Bosko</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout : une colonne de fiches de tâches groupées par bloc de chantier, barre d'avancement collante en haut */
+:root{
+  --bg:#f3f4f1; --surface:#ffffff; --fg:#1d2420; --muted:#5f6a63; --line:#d6dbd5;
+  --accent:#b4531f; --accent-soft:#f6e3d8; --ok:#2f7a4b; --ok-soft:#dcefe2; --warn:#9a6a00;
+  --f-body:"IBM Plex Sans",system-ui,sans-serif; --f-mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#141816; --surface:#1d2320; --fg:#e7ebe7; --muted:#9aa59e; --line:#323a35;
+  --accent:#e98a52; --accent-soft:#3a2518; --ok:#6cc68e; --ok-soft:#1d3226; --warn:#e0b44a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141816; --surface:#1d2320; --fg:#e7ebe7; --muted:#9aa59e; --line:#323a35;
+  --accent:#e98a52; --accent-soft:#3a2518; --ok:#6cc68e; --ok-soft:#1d3226; --warn:#e0b44a; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.45;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:14px 10px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
+h1{font-size:19px;margin:0;font-weight:600;text-wrap:balance}
+.sub{color:var(--muted);font-size:13px;margin:0}
+.bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--ok);width:0;transition:width .3s}
+.count{font-family:var(--f-mono);font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+h2{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:8px 0 0;font-weight:600}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.card.done{border-color:var(--ok)}
+.top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.top b{font-size:16px;font-weight:600;min-width:0}
+.pill{font-size:11px;padding:2px 8px;border-radius:99px;white-space:nowrap;background:var(--accent-soft);color:var(--accent);font-weight:600}
+.done .pill{background:var(--ok-soft);color:var(--ok)}
+.meta{font-size:13px;color:var(--muted);display:grid;grid-template-columns:auto 1fr;gap:2px 10px}
+.meta span:nth-child(odd){font-family:var(--f-mono);font-size:11px;text-transform:uppercase;letter-spacing:.05em;padding-top:2px}
+.q{font-weight:500}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.row label{flex:1 1 140px;display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--muted);min-width:0}
+input[type=date],textarea{font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px;width:100%;box-sizing:border-box}
+textarea{min-height:56px;resize:vertical}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chips button{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:99px;padding:6px 12px;cursor:pointer}
+.chips button[aria-pressed=true]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.save{font:inherit;font-weight:600;background:var(--accent);color:#fff;border:0;border-radius:8px;padding:10px 14px;cursor:pointer;align-self:flex-start}
+.save:disabled{opacity:.5}
+.msg{font-size:12px;color:var(--muted)}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.empty{color:var(--muted);text-align:center;padding:40px 0}
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Engagements planning Bosko</h1>
+    <p class="sub">Pour chaque tâche, mets ta meilleure estimation. « Mon estimation » suffit : l'agent planning la marquera « à confirmer ».</p>
+    <div class="bar"><i id="bar"></i></div>
+    <span class="count" id="count">Chargement des questions…</span>
+  </header>
+  <main id="list"><p class="empty" id="empty">Les questions arrivent. Si rien ne s'affiche, ouvre la page depuis ton compte Claude.</p></main>
+</div>
+
+<script>
+const FIAB=[["ecrit","Engagement écrit"],["oral","Annoncé à l'oral"],["estim","Mon estimation"],["inconnu","Je ne sais pas"]];
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let db=null, docs=[], drafts={};
+function render(){
+  const list=document.getElementById("list");
+  if(!docs.length) return;
+  const done=docs.filter(d=>d.data().repondu).length;
+  document.getElementById("count").textContent=`${done} / ${docs.length} réponses enregistrées`;
+  document.getElementById("bar").style.width=(100*done/docs.length)+"%";
+  let html="", groupe=null;
+  for(const d of docs){
+    const q=d.data(), id=d.id, dr=drafts[id]||{};
+    if(q.groupe!==groupe){groupe=q.groupe; html+=`<h2>${esc(groupe)}</h2>`;}
+    const fiab=dr.fiabilite??q.fiabilite??"";
+    html+=`<section class="card${q.repondu?" done":""}" data-id="${id}">
+      <div class="top"><b>${esc(q.tache)}</b><span class="pill">${q.repondu?"Répondu":"À remplir"}</span></div>
+      <div class="meta"><span>Prévu 10/06</span><span>${esc(q.prevu||"—")}</span><span>Situation</span><span>${esc(q.situation||"—")}</span></div>
+      <div class="q">${esc(q.question)}</div>
+      <div class="row">
+        <label for="deb-${id}">Début estimé<input type="date" id="deb-${id}" data-f="debut" value="${esc(dr.debut??q.debut??"")}"></label>
+        <label for="fin-${id}">Fin estimée<input type="date" id="fin-${id}" data-f="fin" value="${esc(dr.fin??q.fin??"")}"></label>
+      </div>
+      <div class="chips" role="group" aria-label="Fiabilité">${FIAB.map(([k,l])=>`<button type="button" data-k="${k}" aria-pressed="${fiab===k}">${l}</button>`).join("")}</div>
+      <label for="com-${id}" class="msg">Commentaire (qui, condition, dépendance)</label>
+      <textarea id="com-${id}" data-f="commentaire">${esc(dr.commentaire??q.commentaire??"")}</textarea>
+      <button class="save" type="button">Enregistrer</button>
+      <span class="msg" aria-live="polite"></span>
+    </section>`;
+  }
+  list.innerHTML=html;
+}
+document.addEventListener("input",e=>{
+  const c=e.target.closest(".card"); if(!c||!e.target.dataset.f) return;
+  (drafts[c.dataset.id]??={})[e.target.dataset.f]=e.target.value;
+});
+document.addEventListener("click",async e=>{
+  const c=e.target.closest(".card"); if(!c) return; const id=c.dataset.id;
+  if(e.target.dataset.k){
+    (drafts[id]??={}).fiabilite=e.target.dataset.k;
+    c.querySelectorAll(".chips button").forEach(b=>b.setAttribute("aria-pressed",b===e.target));
+    return;
+  }
+  if(e.target.classList.contains("save")){
+    const msg=c.querySelector(".msg[aria-live]"), b=e.target;
+    const val={debut:c.querySelector('[data-f=debut]').value, fin:c.querySelector('[data-f=fin]').value,
+      commentaire:c.querySelector('[data-f=commentaire]').value.trim(),
+      fiabilite:(drafts[id]||{}).fiabilite ?? (docs.find(d=>d.id===id)?.data().fiabilite||"")};
+    if(!val.fin && !val.commentaire && val.fiabilite!=="inconnu"){msg.textContent="Mets au moins une date de fin, un commentaire ou « Je ne sais pas ».";return;}
+    b.disabled=true; msg.textContent="Enregistrement…";
+    try{ await db.doc("questions/"+id).update({...val,repondu:true,maj:new Date().toISOString()}); delete drafts[id]; }
+    catch(err){ msg.textContent="Pas enregistré : "+(err?.message||"erreur")+". Réessaie."; b.disabled=false; }
+  }
+});
+(async()=>{
+  const t=setTimeout(()=>{document.getElementById("count").textContent="Questions introuvables pour l'instant.";},10000);
+  db=await window.claude?.use?.("db");
+  if(!db){clearTimeout(t);document.getElementById("count").textContent="Page à ouvrir depuis ton compte Claude pour enregistrer.";return;}
+  db.collection("questions").orderBy("ordre").onSnapshot(s=>{
+    clearTimeout(t); docs=s.docs;
+    if(!docs.length){document.getElementById("count").textContent="Aucune question pour l'instant.";return;}
+    document.getElementById("empty")?.remove(); render();
+  },err=>{clearTimeout(t);document.getElementById("count").textContent="Lecture impossible : "+(err?.message||"erreur");});
+})();
+</script>
