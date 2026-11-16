@@ -5,6 +5,12 @@ description: Préparer l'ordre du jour de la réunion de chantier TBRP du mardi 
 
 # Ordre du jour (lundi après-midi, réunion du mardi 9h)
 
+## 0. Public ou interne (règle absolue de Yahya, 16/11)
+Le CR et l'ODJ partent à toutes les entreprises : on n'y parle **que des travaux** (qui fait quoi, où, pour quand, ce qui bloque sur le chantier).
+**Jamais dans `sujet`, `action`, `observations`** : départ ou remplacement d'une entreprise (ex. ABAT), consultation ou nouveau marché, paiements, factures, décomptes, montants, avenants, TS (sauf s'ils bloquent un travail, et sans montant), attente d'une validation interne AEDGE/MO (Loubna, Marwane, Sami, Nadia, « validation MOD »), positions ou décisions internes du MOD, brouillons.
+Ces informations vont dans le champ **`note_interne`** du point (jamais imprimé) ; un point entièrement interne prend **`"interne": true`** (exclu du CR/ODJ). Une note dictée de Yahya est par défaut une info **pour lui** : n'en publier que la partie travaux.
+`render_cr.py` refuse de générer s'il trouve un mot interdit : corriger le point (déplacer vers `note_interne`), jamais contourner.
+
 1. Mettre `D:\BK\03_TRAVAIL\pilotage\tbrp_state.json` à jour avec les mails TBRP de la semaine (`outlook.py lister`/`lire`, texte seulement) : même règles que le skill `cr-chantier` §2, sans changer un statut sans source écrite.
 2. Générer :
    `python D:/BK/00_SYSTEME/scripts/render_cr.py D:/BK/03_TRAVAIL/pilotage/tbrp_state.json --type odj --date <mardi AAAA-MM-JJ> --next "Mardi JJ/MM/AAAA à 9h – site TBRP" --outdir D:/BK/04_PUBLIER/odj`

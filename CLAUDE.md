@@ -49,6 +49,7 @@ Procédure complète : skill `traiter-mail`. Objectif : brouillon prêt à envoy
 - Cc Sami, Marwane, Nadia sur les mails Bosko ; tutoiement sauf Nadia ; répondre dans le fil existant.
 - SharePoint = seule référence (jamais « GED ») ; ses points de classement vont à Yahya, jamais dans un CR/ODJ.
 - CR et ODJ : aucun décompte ; les TS ne sont cités que s'ils bloquent un travail.
+- **CR et ODJ = travaux seulement** (règle absolue, 16/11). Jamais : départ/remplacement d'entreprise, consultation, paiement, facture, montant, avenant, attente d'une validation interne (Loubna, Marwane, Sami, Nadia, MO/MOD). Ces infos → `note_interne` du point ou point `"interne": true` dans `tbrp_state.json` ; `render_cr.py` bloque sinon. Les notes dictées de Yahya sont d'abord pour lui.
 - Validation architecte, DONAMETICE, Save Consulting, BETB, Polyingénierie = relance, pas décision MO.
 - Décomptes : validés par le MOD après l'architecte, lus dans Outlook.
 - Budget de référence = dernier TSB de Marwane.

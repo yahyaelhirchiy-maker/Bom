@@ -7,6 +7,12 @@ description: Établir le compte rendu de la réunion de chantier TBRP du mardi �
 
 Source de vérité des points : `D:\BK\03_TRAVAIL\pilotage\tbrp_state.json` (`points_chantier`, `decisions_mo`, `regles`).
 
+## 0. Public ou interne (règle absolue de Yahya, 16/11)
+Le CR et l'ODJ partent à toutes les entreprises : on n'y parle **que des travaux** (qui fait quoi, où, pour quand, ce qui bloque sur le chantier).
+**Jamais dans `sujet`, `action`, `observations`** : départ ou remplacement d'une entreprise (ex. ABAT), consultation ou nouveau marché, paiements, factures, décomptes, montants, avenants, TS (sauf s'ils bloquent un travail, et sans montant), attente d'une validation interne AEDGE/MO (Loubna, Marwane, Sami, Nadia, « validation MOD »), positions ou décisions internes du MOD, brouillons.
+Ces informations vont dans le champ **`note_interne`** du point (jamais imprimé) ; un point entièrement interne prend **`"interne": true`** (exclu du CR/ODJ). Une note dictée de Yahya est par défaut une info **pour lui** : n'en publier que la partie travaux.
+`render_cr.py` refuse de générer s'il trouve un mot interdit : corriger le point (déplacer vers `note_interne`), jamais contourner.
+
 ## 1. Notes
 Yahya donne ses notes par lot (GIDNA GO, GIDNA ELEC, GIDNA FLUIDES, ABAT, GM, BATISOLAIRE…). Corriger les noms avec `registres\lexique.csv` (« Gina » = GIDNA).
 

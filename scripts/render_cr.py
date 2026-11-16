@@ -19,13 +19,27 @@ S=json.load(open(A.state,encoding="utf-8"))
 DATE=dt.date.fromisoformat(A.date); DSTR=DATE.strftime("%d/%m/%Y"); TAG=DATE.strftime("%y%m%d")
 IS_ODJ = A.type=="odj"
 NEXT = A.next or S.get("prochaine_reunion","")
+import re
+# Règle Yahya 16/11 : CR et ODJ = uniquement les travaux. Les infos internes (départ d'entreprise, consultation,
+# paiement, montant, avenant, validations AEDGE/MO…) vont dans `note_interne` (jamais imprimée) ou point `interne: true`.
+INTERDIT = re.compile(r"(?i)quitte|d[ée]part d|remplacement d|impay|factur|paiement|r[èe]glement des|d[ée]compte|\bDP ?n?°|"
+    r"\bTSB\b|budget|marge|\bHT\b|\bDH\b|\bMAD\b|\d{3}[  ]\d{3}|avenant|consultation|consulter|nouveau march|"
+    r"loubna|marwane|\bsami\b|nadia|confirm[ée] par|brouillon|d[ée]cision MO|validation MOD|en attente (de la |du )?MO\b")
+fuites=[]
 order=[]; groups={}
 for p in S["points_chantier"]:
+    if p.get("interne"): continue
     if p["statut"]=="Clos" and (IS_ODJ or p.get("maj_le")!=A.date): continue
+    for champ in ("sujet","responsable","action","observations"):
+        m=INTERDIT.search(p.get(champ) or "")
+        if m: fuites.append(f'{p.get("id")} {champ} : « {m.group(0)} » dans « {(p.get(champ) or "")[:120]} »')
     sec=p["section"]
     if sec not in groups: groups[sec]=[]; order.append(sec)
     e=dt.date.fromisoformat(p["echeance"]) if p.get("echeance") else None
     groups[sec].append((p["sujet"],p["demande_par"],p["responsable"],p["priorite"],p["action"],e,p["statut"],p.get("observations","")))
+if fuites:
+    sys.exit("REFUS : information interne dans un point publié (CR/ODJ = travaux seulement).\n"
+             "Déplacer l'info dans `note_interne` du point, ou marquer le point `interne: true`, puis relancer :\n- " + "\n- ".join(fuites))
 SECTIONS=[(s,groups[s]) for s in order]
 ARIAL = "Arial"
 thin = Side(style="thin", color="000000")
