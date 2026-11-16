@@ -22,7 +22,7 @@ def main():
     C.mkdir(exist_ok=True)
     if a[0] in ("debut", "fin"):
         f(a[1], "debut" if a[0] == "debut" else "ok").write_text(f"{datetime.now():%H:%M}\n")
-        print("noté")
+        print("ok")
         return
     p = "matin" if datetime.now().hour * 60 + datetime.now().minute < 12 * 60 + 30 else "apres-midi"
     if f(p, "ok").exists():
