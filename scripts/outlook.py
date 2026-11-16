@@ -92,8 +92,32 @@ def lire(n):
     print("\n" + couper_historique(m.Body))
 
 
+def envoye(sujet, date):
+    """Mail ENVOYÉ par Yahya (dossier Éléments envoyés) dont l'objet contient `sujet`, le plus récent
+    à la date AAAA-MM-JJ donnée (ou le plus récent tout court). Sert à répondre à tous sur son propre mail."""
+    items = ns().GetDefaultFolder(5).Items  # 5 = Éléments envoyés
+    items.Sort("[SentOn]", True)
+    for m in items:
+        try:
+            if sujet.lower() in (m.Subject or "").lower() and (not date or f"{m.SentOn:%Y-%m-%d}" == date):
+                return m
+        except Exception:
+            continue
+    sys.exit(f"Aucun mail envoyé trouvé : « {sujet} » {date or ''} (synchronisation d'Outlook terminée ?)")
+
+
+def brouillon_envoye(sujet, date, corps, pjs, objet=None):
+    r = envoye(sujet, date).ReplyAll()
+    if objet:
+        r.Subject = objet
+    remplir(r, corps, pjs)
+
+
 def brouillon(n, corps, pjs):
-    r = mail(n).ReplyAll()
+    remplir(mail(n).ReplyAll(), corps, pjs)
+
+
+def remplir(r, corps, pjs):
     deja = (r.To + ";" + r.CC).lower()
     with open(CONTACTS, encoding="utf-8-sig") as f:
         for c in csv.DictReader(f, delimiter=";"):
@@ -118,7 +142,11 @@ if __name__ == "__main__":
     l = s.add_parser("lister"); l.add_argument("--jours", type=int, default=2); l.add_argument("--non-lus", action="store_true")
     s.add_parser("lire").add_argument("n")
     b = s.add_parser("brouillon"); b.add_argument("n"); b.add_argument("--corps", required=True); b.add_argument("--pj", nargs="*")
+    e = s.add_parser("brouillon-envoye", help="répondre à tous sur un mail envoyé par Yahya")
+    e.add_argument("sujet"); e.add_argument("--date", help="AAAA-MM-JJ d'envoi"); e.add_argument("--corps", required=True)
+    e.add_argument("--pj", nargs="*"); e.add_argument("--objet", help="remplace l'objet de la réponse")
     x = a.parse_args()
     sys.stdout.reconfigure(encoding="utf-8")
     {"lister": lambda: lister(x.jours, x.non_lus), "lire": lambda: lire(x.n),
-     "brouillon": lambda: brouillon(x.n, x.corps, x.pj)}[x.cmd]()
+     "brouillon": lambda: brouillon(x.n, x.corps, x.pj),
+     "brouillon-envoye": lambda: brouillon_envoye(x.sujet, x.date, x.corps, x.pj, x.objet)}[x.cmd]()
