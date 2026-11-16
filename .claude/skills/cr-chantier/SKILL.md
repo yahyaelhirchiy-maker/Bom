@@ -21,10 +21,12 @@ Chaque note met à jour un point existant (action, échéance, statut, observati
 `python D:/BK/00_SYSTEME/scripts/render_cr.py D:/BK/03_TRAVAIL/pilotage/tbrp_state.json --type cr --date <AAAA-MM-JJ> --next "Mardi JJ/MM/AAAA à 9h – site TBRP" --outdir D:/BK/04_PUBLIER/cr`
 → `<AAMMJJ>.TBRP CR Réunion chantier.xlsx` + `.pdf` (A3, via Excel). Contrôler le texte du PDF (pypdf) : nombre de points, aucune ligne SharePoint/GED.
 
-## 4. Brouillon (Outlook Web, navigateur intégré, texte seulement)
-Sur le dernier mail du fil « TBRP - CR réunion de chantier » : « Répondre à tous », corps :
-« Bonjour à tous, Vous trouverez en pièce jointe le compte rendu de la réunion de chantier du JJ/MM/AAAA, qui s'est tenue sur site TBRP. Merci de noter que la prochaine réunion de chantier aura lieu le mardi JJ/MM/AAAA à 9h toujours sur site TBRP. Bien à vous, »
-L'heure doit être celle du CR. Quitter sans envoyer. La pièce jointe ne peut pas être ajoutée automatiquement : donner à Yahya le chemin du PDF à joindre.
+## 4. Brouillon (Outlook classique, Python : sans navigateur, PJ incluse)
+Écrire le corps dans `D:\BK\02_ENTRANT\corps_cr_<AAMMJJ>.txt` :
+« Bonjour à tous,\n\nVous trouverez en pièce jointe le compte rendu de la réunion de chantier du JJ/MM/AAAA, qui s'est tenue sur site TBRP.\n\nMerci de noter que la prochaine réunion de chantier aura lieu le mardi JJ/MM/AAAA à 9h toujours sur site TBRP.\n\nBien à vous, »
+Puis, en répondant à tous sur le **dernier CR envoyé par Yahya** (pas sur le dernier message du fil, qui peut venir d'une entreprise) :
+`python -I D:/BK/00_SYSTEME/scripts/outlook.py brouillon-envoye "TBRP - CR réunion de chantier" --date <AAAA-MM-JJ du dernier CR envoyé> --corps <fichier.txt> --pj "D:/BK/04_PUBLIER/cr/<AAMMJJ>.TBRP CR Réunion chantier.pdf"`
+Cela ajoute les Cc habituels (contacts.csv), joint le PDF et enregistre en Brouillons : jamais d'envoi. Si « Aucun mail envoyé trouvé » : Outlook se synchronise encore (première connexion ≈ 20 min), réessayer plus tard. Solution de secours (Outlook classique indisponible) : Outlook Web, texte seulement, et donner à Yahya le chemin du PDF à joindre.
 
 ## 5. Registres et traces
 - `python D:/BK/00_SYSTEME/scripts/importer_pilotage.py`, puis commit local dans `03_TRAVAIL` : « CR réunion du JJ/MM ».

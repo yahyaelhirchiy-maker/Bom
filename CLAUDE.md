@@ -44,6 +44,19 @@ Procédure complète : skill `traiter-mail`. Objectif : brouillon prêt à envoy
 - SharePoint = canal officiel ; ne jamais écrire « GED ». Points SharePoint (classement, fichier non à jour) : pour Yahya seul, jamais dans un CR ou un ODJ.
 - Réunion de chantier chaque mardi 9h, site TBRP. Format de nom des livrables : AAMMJJ.TBRP.Objet.
 
+## Passation du 15/11 (règles du §1)
+- Brouillons uniquement : jamais d'envoi de mail.
+- Cc Sami, Marwane, Nadia sur les mails Bosko ; tutoiement sauf Nadia ; répondre dans le fil existant.
+- SharePoint = seule référence (jamais « GED ») ; ses points de classement vont à Yahya, jamais dans un CR/ODJ.
+- CR et ODJ : aucun décompte ; les TS ne sont cités que s'ils bloquent un travail.
+- Validation architecte, DONAMETICE, Save Consulting, BETB, Polyingénierie = relance, pas décision MO.
+- Décomptes : validés par le MOD après l'architecte, lus dans Outlook.
+- Budget de référence = dernier TSB de Marwane.
+- Hors périmètre : budget global/programme, flux, publicitaire, contrats intervenants, cuisines.
+- Clos couvert = verrière (GIDNA) et menuiserie alu / murs-rideaux (GM) uniquement.
+- Économie : SharePoint en copie locale, Outlook en texte, pas de computer use, JSON mis à jour seulement si ça change.
+- Détail, lots, finances, urgences : `C:\Users\yahya\Downloads\TBRP_Pilotage\PASSATION_BOSKO.md` ; registre de référence fusionné : `tbrp_state.json` du même dossier (ne pas l'écraser), `render_cr.py` génère CR et ODJ.
+
 ## Priorités
 1. Chemin critique, en commençant par le **clos couvert** : verrière (GIDNA), menuiserie alu (GM).
 2. Puis le reste du chemin critique, puis le hors chemin critique.
@@ -53,7 +66,7 @@ Procédure complète : skill `traiter-mail`. Objectif : brouillon prêt à envoy
 - Mettre `ETAT.md` à jour **seulement si quelque chose change**.
 - Documents : convertis **une seule fois** en texte (`scripts\convertir_texte.py` → `03_TRAVAIL\_texte\`). Lire le `.txt`, jamais l'original.
 - Outlook : passer par `scripts\outlook.py` (texte, historique coupé). Chrome seulement en secours, en lisant le texte, jamais par captures.
-- **PC actuel : Outlook classique ne se connecte pas au compte AEDGE.** Lire et préparer les brouillons dans Outlook Web, via le navigateur intégré de Claude (texte seulement), voir skill `traiter-mail` §0. Pas de tri automatique des mails dans ce cas : traitement à la demande.
+- **Outlook classique est connecté au compte AEDGE depuis le 16/11** (Outlook ouvert, première synchro ≈ 20 min). Brouillons par Python : `outlook.py brouillon` (réponse à un mail reçu) et `outlook.py brouillon-envoye` (réponse à tous sur un mail envoyé par Yahya, ex. CR/ODJ, PJ incluse). Outlook Web (navigateur intégré, texte seulement) reste le secours, voir skill `traiter-mail` §0.
 - MS Project : `scripts\planning.py extraire "<.mpp>"` (une fois, si le .mpp a changé), puis `planning.py lot "<mot>"` pour ne lire que le lot utile. MS Project n'est pas installé : le .mpp est lu directement (MPXJ + Java portable `D:\Outils\jre21`). Planning de référence : `01_MIROIR\OneDrive - AEDGE Partners\038\04. Construction\02. Planning\01. Planning\Simulation planning\260610.TBRP.Planning enveloppe Màj.mpp` (enveloppe du 10/06, sans dates de référence) ; prendre un .mpp plus récent s'il apparaît dans ce dossier.
 
 ## Contacts et messages vocaux
