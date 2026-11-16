@@ -3,6 +3,7 @@
   python outlook.py lister [--jours 2] [--non-lus]
   python outlook.py lire N
   python outlook.py envoyes [--jours 2]
+  python outlook.py nouveau --a <adresse...> [--cc ...] --objet "..." --corps corps.txt [--pj ...]   (nouveau mail, sans fil)
   python outlook.py chercher <mots...> [--jours 365] [--max 25]   (historique d'un sujet, toute la boîte ; H1, H2… pour lire)
   python outlook.py brouillon N --corps corps.txt [--pj fichier1 fichier2 ...]
   python outlook.py brouillon-envoye "<objet>" [--date AAAA-MM-JJ] --corps corps.txt [--pj ...] [--objet ...]
@@ -130,6 +131,18 @@ def brouillon_envoye(sujet, date, corps, pjs, objet=None):
     remplir(r, corps, pjs)
 
 
+def nouveau(a, cc, objet, corps, pjs):
+    """Nouveau mail (pas de fil existant) : À + Cc donnés, Cc systématiques ajoutés, ENREGISTRÉ en Brouillons."""
+    r = win32com.client.Dispatch("Outlook.Application").CreateItem(0)
+    for x in a:
+        r.Recipients.Add(x).Type = 1
+    for x in cc or []:
+        r.Recipients.Add(x).Type = CC
+    r.Subject = objet
+    r.HTMLBody = "<html><body></body></html>"
+    remplir(r, corps, pjs)
+
+
 def brouillon(n, corps, pjs):
     remplir(mail(n).ReplyAll(), corps, pjs)
 
@@ -234,6 +247,9 @@ if __name__ == "__main__":
     e = s.add_parser("brouillon-envoye", help="répondre à tous sur un mail envoyé par Yahya")
     e.add_argument("sujet"); e.add_argument("--date", help="AAAA-MM-JJ d'envoi"); e.add_argument("--corps", required=True)
     e.add_argument("--pj", nargs="*"); e.add_argument("--objet", help="remplace l'objet de la réponse")
+    nv = s.add_parser("nouveau", help="nouveau mail en brouillon (quand aucun fil n'existe)")
+    nv.add_argument("--a", nargs="+", required=True); nv.add_argument("--cc", nargs="*"); nv.add_argument("--objet", required=True)
+    nv.add_argument("--corps", required=True); nv.add_argument("--pj", nargs="*")
     xp = s.add_parser("exporter", help="mail en .msg et/ou ses PJ vers un dossier local (dépôt SharePoint)")
     xp.add_argument("n", nargs="?"); xp.add_argument("--envoye", help="objet d'un mail envoyé par Yahya")
     xp.add_argument("--date"); xp.add_argument("--vers", required=True)
@@ -249,4 +265,5 @@ if __name__ == "__main__":
         sys.exit(exporter(x.n, x.envoye, x.date, x.vers, x.mail or not x.pj, x.pj))
     {"lister": lambda: lister(x.jours, x.non_lus), "lire": lambda: lire(x.n), "envoyes": lambda: envoyes(x.jours),
      "brouillon": lambda: brouillon(x.n, x.corps, x.pj),
-     "brouillon-envoye": lambda: brouillon_envoye(x.sujet, x.date, x.corps, x.pj, x.objet)}[x.cmd]()
+     "brouillon-envoye": lambda: brouillon_envoye(x.sujet, x.date, x.corps, x.pj, x.objet),
+     "nouveau": lambda: nouveau(x.a, x.cc, x.objet, x.corps, x.pj)}[x.cmd]()
