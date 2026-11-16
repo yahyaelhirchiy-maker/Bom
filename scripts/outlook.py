@@ -2,7 +2,9 @@
 
   python outlook.py lister [--jours 2] [--non-lus]
   python outlook.py lire N
+  python outlook.py envoyes [--jours 2]
   python outlook.py brouillon N --corps corps.txt [--pj fichier1 fichier2 ...]
+  python outlook.py brouillon-envoye "<objet>" [--date AAAA-MM-JJ] --corps corps.txt [--pj ...] [--objet ...]
 
 N = numéro court donné par `lister` (1, 2…) ou par tri_mails.py (M1, M2…).
 Le brouillon est une « Répondre à tous » dans le fil existant, Cc ajoutés
@@ -78,6 +80,20 @@ def lister(jours, non_lus):
     CACHE.write_text(json.dumps(ids), encoding="utf-8")
 
 
+def envoyes(jours):
+    """Éléments envoyés des N derniers jours (savoir ce que Yahya a déjà répondu)."""
+    items = ns().GetDefaultFolder(5).Items  # 5 = Éléments envoyés
+    items.Sort("[SentOn]", True)
+    depuis = datetime.now() - timedelta(days=jours)
+    for m in items:
+        try:
+            if m.SentOn.replace(tzinfo=None) < depuis:
+                break
+            print(f"{m.SentOn:%Y-%m-%d %H:%M} | {m.To} | {m.Subject}")
+        except AttributeError:
+            continue
+
+
 def mail(n):
     ids = json.loads(CACHE.read_text(encoding="utf-8"))
     return ns().GetItemFromID(ids[str(n).upper()])
@@ -141,12 +157,13 @@ if __name__ == "__main__":
     s = a.add_subparsers(dest="cmd", required=True)
     l = s.add_parser("lister"); l.add_argument("--jours", type=int, default=2); l.add_argument("--non-lus", action="store_true")
     s.add_parser("lire").add_argument("n")
+    s.add_parser("envoyes").add_argument("--jours", type=int, default=2)
     b = s.add_parser("brouillon"); b.add_argument("n"); b.add_argument("--corps", required=True); b.add_argument("--pj", nargs="*")
     e = s.add_parser("brouillon-envoye", help="répondre à tous sur un mail envoyé par Yahya")
     e.add_argument("sujet"); e.add_argument("--date", help="AAAA-MM-JJ d'envoi"); e.add_argument("--corps", required=True)
     e.add_argument("--pj", nargs="*"); e.add_argument("--objet", help="remplace l'objet de la réponse")
     x = a.parse_args()
     sys.stdout.reconfigure(encoding="utf-8")
-    {"lister": lambda: lister(x.jours, x.non_lus), "lire": lambda: lire(x.n),
+    {"lister": lambda: lister(x.jours, x.non_lus), "lire": lambda: lire(x.n), "envoyes": lambda: envoyes(x.jours),
      "brouillon": lambda: brouillon(x.n, x.corps, x.pj),
      "brouillon-envoye": lambda: brouillon_envoye(x.sujet, x.date, x.corps, x.pj, x.objet)}[x.cmd]()

@@ -1,3 +1,4 @@
+SECOURS uniquement (Outlook classique indisponible). Procédure normale : `modeles/consignes/mails_outlook.md`.
 
 Traitement des mails du chantier TBRP – Bosko. Réponds en français, court.
 

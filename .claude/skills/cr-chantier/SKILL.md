@@ -1,6 +1,6 @@
 ---
 name: cr-chantier
-description: Établir le compte rendu de la réunion de chantier TBRP du mardi à partir des notes (souvent dictées) du chef de projet — mise à jour de tbrp_state.json, CR xlsx + pdf au format AEDGE, brouillon Outlook Web prêt à envoyer. À utiliser dès que Yahya donne ses notes de réunion.
+description: Établir le compte rendu de la réunion de chantier TBRP du mardi à partir des notes (souvent dictées) du chef de projet — mise à jour de tbrp_state.json, CR xlsx + pdf au format AEDGE, brouillon Outlook (classique par Python, PDF joint) prêt à envoyer. À utiliser dès que Yahya donne ses notes de réunion.
 ---
 
 # CR de réunion de chantier (mardi 9h, site TBRP)
@@ -25,7 +25,7 @@ Chaque note met à jour un point existant (action, échéance, statut, observati
 Écrire le corps dans `D:\BK\02_ENTRANT\corps_cr_<AAMMJJ>.txt` :
 « Bonjour à tous,\n\nVous trouverez en pièce jointe le compte rendu de la réunion de chantier du JJ/MM/AAAA, qui s'est tenue sur site TBRP.\n\nMerci de noter que la prochaine réunion de chantier aura lieu le mardi JJ/MM/AAAA à 9h toujours sur site TBRP.\n\nBien à vous, »
 Puis, en répondant à tous sur le **dernier CR envoyé par Yahya** (pas sur le dernier message du fil, qui peut venir d'une entreprise) :
-`python -I D:/BK/00_SYSTEME/scripts/outlook.py brouillon-envoye "TBRP - CR réunion de chantier" --date <AAAA-MM-JJ du dernier CR envoyé> --corps <fichier.txt> --pj "D:/BK/04_PUBLIER/cr/<AAMMJJ>.TBRP CR Réunion chantier.pdf"`
+`python D:/BK/00_SYSTEME/scripts/outlook.py brouillon-envoye "TBRP - CR réunion de chantier" --date <AAAA-MM-JJ du dernier CR envoyé> --corps <fichier.txt> --pj "D:/BK/04_PUBLIER/cr/<AAMMJJ>.TBRP CR Réunion chantier.pdf"`
 Cela ajoute les Cc habituels (contacts.csv), joint le PDF et enregistre en Brouillons : jamais d'envoi. Si « Aucun mail envoyé trouvé » : Outlook se synchronise encore (première connexion ≈ 20 min), réessayer plus tard. Solution de secours (Outlook classique indisponible) : Outlook Web, texte seulement, et donner à Yahya le chemin du PDF à joindre.
 
 ## 5. Registres et traces

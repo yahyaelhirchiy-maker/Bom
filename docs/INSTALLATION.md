@@ -71,7 +71,7 @@ Test : `python D:\BK\00_SYSTEME\scripts\outlook.py lister --jours 1`
 
 En secours seulement : extension **Claude in Chrome** + Outlook Web.
 
-Si Outlook classique reste bloqué sur « Adding… » (compte d'entreprise refusé sur un PC personnel) : se connecter à Outlook Web **dans le navigateur intégré de l'appli Claude** (Ctrl+Shift+B), connexion gardée. Les mails sont alors traités à la demande (skill `traiter-mail` §0) ; ne pas créer la tâche planifiée `BOSKO\Mails`, qui a besoin d'Outlook classique.
+Depuis le 16/11 Outlook classique est connecté (garder Outlook ouvert). Si un jour il reste bloqué sur « Adding… » (compte d'entreprise refusé sur un PC personnel) : se connecter à Outlook Web **dans le navigateur intégré de l'appli Claude** (Ctrl+Shift+B), connexion gardée. Les mails sont alors traités à la demande (skill `traiter-mail` §0) ; ne pas créer la tâche planifiée `BOSKO\Mails`, qui a besoin d'Outlook classique.
 
 Planning : renseigner le chemin du .mpp puis extraire une première fois :
 `python D:\BK\00_SYSTEME\scripts\planning.py extraire "D:\BK\01_MIROIR\<chemin>\planning.mpp"`
@@ -90,10 +90,10 @@ schtasks /Create /TN "BOSKO\RemoteControl" /SC ONLOGON /RL LIMITED `
 Ensuite, depuis le téléphone (app Claude) : se connecter à la session du PC.
 
 ## 8. Deux passages par jour (lun.–ven.)
-Depuis le 14/11/2026, **2 sessions Claude par jour ouvré** (avant : 7), en tâches planifiées **de l'appli Claude** (elles ont besoin du navigateur intégré pour Outlook Web) :
+Depuis le 14/11/2026, **2 sessions Claude par jour ouvré** (avant : 7), en tâches planifiées **de l'appli Claude** (mails par Outlook classique via `outlook.py` ; Outlook Web dans le navigateur intégré en secours) :
 - **BOSKO – Matin** (`bosko-mails`, 7h30) : notes dictées, mails, `importer_pilotage.py`, `digest.py`, briefing (avec « En bref »), publication de la page, notification.
 - **BOSKO – Après-midi** (`bosko-apres-midi`, 14h) : notes, mails, récap court, publication, notification ; le vendredi, + rapport hebdo.
-Consignes : `modeles\consignes\matin.md`, `apres-midi.md`, `mails_web.md`. Un passage ne lit que `CLAUDE.md`, `ETAT.md`, `_cache\digest.md`, les notes en attente et les nouveaux mails.
+Consignes : `modeles\consignes\matin.md`, `apres-midi.md`, `mails_outlook.md` (secours : `mails_web.md`). Un passage ne lit que `CLAUDE.md`, `ETAT.md`, `_cache\digest.md`, les notes en attente et les nouveaux mails.
 Livrables : `D:\BK_PUBLIER\<briefing|mails|hebdo|cr|odj>\`. Page : https://claude.ai/artifact/592VnZ8SfbeMx6JqwDGbBM.
 
 À régler dans l'appli, pour **chaque** tâche : modèle **Sonnet**, puis **Run now** une fois pour valider les autorisations.
