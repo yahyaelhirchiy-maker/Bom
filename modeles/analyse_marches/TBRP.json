@@ -1,0 +1,123 @@
+{
+  "_lisez_moi": "Config de scripts/analyse_marches.py pour un projet. Chemins relatifs à racine_texte. 'dqe' : bordereaux chiffrés retenus (le plus récent / signé) ; vide = choix automatique. 'perimetre' : 1 ligne, sert à Qwen pour situer les autres lots.",
+  "projet": "TBRP",
+  "racine_texte": "D:\\BK\\03_TRAVAIL\\_texte\\038",
+  "travail": "D:\\BK\\03_TRAVAIL",
+  "publier": "D:\\BK\\04_PUBLIER",
+  "lots_csv": "D:\\BK\\03_TRAVAIL\\registres\\lots.csv",
+  "tsb": "03. Etude conception/25.AEDGE PARTNERS - Technique/260625.TBRP.TSB/260625.TBRP.TSB.xlsx.txt",
+  "dossiers_avancement": ["04. Construction"],
+  "lots": {
+    "GO": {
+      "dossiers": ["07. Achats & marchés/02. Entreprises/05. Gros Œuvre - Etanchéité - CM"],
+      "dqe": ["07. Achats & marchés/02. Entreprises/05. Gros Œuvre - Etanchéité - CM/02. Contrat- Marché - Avenants/01. Draft Marché/Contrat à Imprimer/07.1. TBRP_BDP_GO.PDF.txt",
+              "07. Achats & marchés/02. Entreprises/05. Gros Œuvre - Etanchéité - CM/02. Contrat- Marché - Avenants/03. Avenants/Projet d'Avenant 3 GIDNA/04. Maçonnerie & étanchéité/260220.TBRP.Etat des TS GIDNA après validation BETB.xlsx.txt"],
+      "perimetre": "Gros œuvre (terrassement, fondations, béton armé, maçonnerie, enduits), étanchéité, charpente métallique ; avenants 1-3 (radier, séparation joint, monocouche, fausse jardinière rooftop, hottes, appuis travelators)."
+    },
+    "VER": {
+      "dossiers": ["07. Achats & marchés/02. Entreprises/05. Gros Œuvre - Etanchéité - CM/02. Contrat- Marché - Avenants/03. Avenants/02. Avenant 2 GIDNA"],
+      "dqe": ["07. Achats & marchés/02. Entreprises/05. Gros Œuvre - Etanchéité - CM/02. Contrat- Marché - Avenants/03. Avenants/02. Avenant 2 GIDNA/02. Annexe N°1- VERRIERE EN ALUMINIUM.pdf.txt"],
+      "note": "Verrière = 1 seul poste au forfait (ENS, 1 234 053,20 HT) : aucun détail pour vérifier les quantités.",
+      "perimetre": "Verrière (charpente, vitrage) par avenant 2 GIDNA GO ; sortie du lot menuiserie alu (moins-value GM)."
+    },
+    "ALU": {
+      "dossiers": ["07. Achats & marchés/02. Entreprises/10 - Menuiserie Alu"],
+      "dqe": ["07. Achats & marchés/02. Entreprises/10 - Menuiserie Alu/01. Consultation/00 - DCE/Round 3/PIECES ECRITES/BOQ-BRP - DCE - MEN ALU  REV F.xlsx.txt"],
+      "note": "Bordereau chiffré GM signé = scan sans texte : quantités du DCE REV F seulement.",
+      "perimetre": "Menuiserie aluminium : murs-rideaux, châssis, portes vitrées, garde-corps vitrés (garde-corps et verrière en moins-value)."
+    },
+    "CFO": {
+      "dossiers": ["07. Achats & marchés/02. Entreprises/08. CFO-CFA"],
+      "dqe": ["07. Achats & marchés/02. Entreprises/08. CFO-CFA/Draft CCG-CPT-Pièce Marché (en attente adjudication)/07. BDP BOSKO CFO CFA Annexe 5.xlsx.txt"],
+      "perimetre": "Courants forts et faibles : poste MT/BT, TGBT, câbles, éclairage (pose), prises, SSI, vidéosurveillance, VDI, groupe électrogène ; appareillage fourni à part."
+    },
+    "FLU": {
+      "dossiers": ["07. Achats & marchés/02. Entreprises/09 - Plomberie - PCI - DSF - Climatisation"],
+      "dqe": ["07. Achats & marchés/02. Entreprises/09 - Plomberie - PCI - DSF - Climatisation/Draft Contrat/07. BDP BOSKO FLUIDES_Annexe 5.XLSX.txt"],
+      "perimetre": "Plomberie sanitaire (hors fourniture appareils), protection incendie, désenfumage, climatisation-ventilation."
+    },
+    "FP": {
+      "dossiers": ["07. Achats & marchés/02. Entreprises/12 - Faux Plafond"],
+      "dqe": ["07. Achats & marchés/02. Entreprises/12 - Faux Plafond/02. Contrat - Marché/OLD/20 10 2025 . BOSKO. BOQ & METRES FAUX PLAFOND. V03 - BatiSolaire - 20260116.pdf.txt"],
+      "perimetre": "Faux plafonds BA13, acoustiques, décoratifs, trappes ; écrans de cantonnement à vérifier (sortis du lot ?)."
+    },
+    "REV": {
+      "dossiers": ["07. Achats & marchés/02. Entreprises/11 - Revêtement"],
+      "dqe": ["07. Achats & marchés/02. Entreprises/11 - Revêtement/02. Marché/01. Draft Marché/04 - BP/04. BORDEREAU DE PRIX.pdf.txt"],
+      "perimetre": "Revêtements durs sols et murs (carrelage, marbre, pierre, vinyle), plinthes, escaliers ; ABAT désisté, remplaçant à consulter."
+    },
+    "VRD": {
+      "note": "BPDE du DCE (quantités sans prix BKTP).",
+      "mots_avancement": ["vrd", "canal", "step", "bktp"],
+      "dossiers": ["07. Achats & marchés/02. Entreprises/02. VRD", "07. Achats & marchés/02. Entreprises/03. STEP", "07. Achats & marchés/02. Entreprises/04. Traitement du Canal"],
+      "dqe": ["07. Achats & marchés/02. Entreprises/02. VRD/DOSSIER DE CONSULTATION/DCE TERRASSEMENT-VOIRIE-ASSAINISSEMENT/BPDE VOIRIE.pdf.txt",
+              "07. Achats & marchés/02. Entreprises/02. VRD/DOSSIER DE CONSULTATION/DCE TERRASSEMENT-VOIRIE-ASSAINISSEMENT/BPDE ASSAINISSEMENT.pdf.txt",
+              "07. Achats & marchés/02. Entreprises/02. VRD/DOSSIER DE CONSULTATION/DCE EAU POTABLE/BPDE EAU POTABLE.pdf.txt",
+              "07. Achats & marchés/02. Entreprises/02. VRD/DOSSIER DE CONSULTATION/DCE ELEC & ECLAIRAGE PUBLIC/BPDE MT-BT.pdf.txt"],
+      "perimetre": "VRD extérieurs : terrassement, voirie, assainissement, eau potable, MT-BT, éclairage public, téléphonie ; canal et STEP (BKTP)."
+    },
+    "MET": {
+      "dossiers": ["07. Achats & marchés/02. Entreprises/13. Menuiserie Métallique"],
+      "dqe": ["07. Achats & marchés/02. Entreprises/13. Menuiserie Métallique/02. Marché-BC/01 - Draft Marché/Draft du marché/04. BDP BOSKO MENUISERIE METALLIQUE INJAD (2).pdf.txt"],
+      "perimetre": "Menuiserie métallique : portes métalliques et coupe-feu, persiennes, grilles, garde-corps acier, échelles ; rideaux coupe-feu et tubes vitrines en provision."
+    },
+    "ESC": {
+      "dossiers": ["07. Achats & marchés/02. Entreprises/06. Appareils Elévateurs"],
+      "dqe": ["07. Achats & marchés/02. Entreprises/06. Appareils Elévateurs/03. Habillage escalators & Travelators/01. Offres reçues/02. GROUPE MSAA/00267-26 Devis BOSKO SHOPPING CENTER V03.pdf.txt"],
+      "perimetre": "Habillage des escalators et travelators (MSAA) ; appareils élévateurs KONE à part."
+    },
+    "PEX": {
+      "dossiers": ["07. Achats & marchés/02. Entreprises/17. Peinture Extérieure", "07. Achats & marchés/02. Entreprises/Peinture"],
+      "dqe": ["07. Achats & marchés/02. Entreprises/17. Peinture Extérieure/03. TCE - TCO/2026.06.22 - TBRP - TCO Peinture Extérieure.xlsx.txt"],
+      "perimetre": "Peinture des faux plafonds extérieurs et des locaux techniques (SATCOPEVE) ; peinture intérieure, époxy et monocouche hors lot à vérifier."
+    },
+    "AGE": {
+      "dossiers": ["07. Achats & marchés/02. Entreprises/18. Agencement"],
+      "dqe": ["07. Achats & marchés/02. Entreprises/18. Agencement/02. Offres reçues/1. ARCSINUS/OFFRE DE PRIX/BRD.pdf.txt"],
+      "note": "Non attribué : offre ARCSINUS lue (PURELINE non comparée).",
+      "perimetre": "Agencement : initiatives, rooftop, sanitaires (cloisons, vasques, habillages), mobilier ; non attribué."
+    },
+    "MBO": {"dossiers": [], "dqe": [], "perimetre": "Menuiserie bois (portes bois, habillages) : DCE chez l'architecte."},
+    "AMP": {"dossiers": [], "dqe": [], "perimetre": "Aménagement paysager : DCE à valider."},
+    "SAN": {
+      "dossiers": ["07. Achats & marchés/02. Entreprises/14. Sanitaire"],
+      "dqe": ["07. Achats & marchés/02. Entreprises/14. Sanitaire/01. Consultation/02. Offres Reçues/06. Capital Céramique - Depot physique/Devis actualisé V2/AEDGE 2606.pdf.txt"],
+      "note": "Non commandé : devis Capital Céramique V2 lu (TCO sans détail).",
+      "perimetre": "Fourniture des appareils sanitaires et robinetterie (pose par fluides ?) ; bâti-supports déjà commandés."
+    },
+    "ECL": {
+      "dossiers": ["07. Achats & marchés/02. Entreprises/16. Fourniture Eclairage"],
+      "dqe": ["07. Achats & marchés/02. Entreprises/16. Fourniture Eclairage/01. Consultation/Round 2/02. Offres Reçues/03. PROLIGHT/Eclairage Décoratif/Offre Finale - Post négo/Offre PROLIGHT - V2 30062026.pdf.txt"],
+      "perimetre": "Fourniture des luminaires (pose par CFO)."
+    },
+    "FAC": {
+      "hors_registre": true,
+      "intitule": "Revêtement façade (Equitone)", "entreprise": "CONFORTISOL",
+      "dossiers": ["07. Achats & marchés/02. Entreprises/15. Revetements Façades"],
+      "dqe": [],
+      "perimetre": "Bardage de façade Equitone collé et agrafé, ossature."
+    }
+  },
+  "mots_sensibles": {
+    "monocouche": ["monocouche"],
+    "résine / époxy": ["resine", "epoxy"],
+    "écran de cantonnement": ["cantonnement"],
+    "rebouchage / calfeutrement": ["rebouchage", "calfeutrement", "calfeutr"],
+    "réservations": ["reservation", "tremie"],
+    "taloché / ragréage / chape": ["taloch", "ragreage", "chape"],
+    "rooftop / jardinière": ["rooftop", "jardiniere"],
+    "sanitaires (appareils)": ["lavabo", "vasque", "wc ", "urinoir", "robinet"],
+    "enduit": ["enduit"],
+    "peinture": ["peinture"],
+    "plinthes": ["plinthe"],
+    "seuils / barres de seuil": ["seuil"],
+    "joints de dilatation": ["joint de dilatation", "couvre-joint", "couvre joint"],
+    "garde-corps": ["garde-corps", "garde corps"],
+    "couvertines / acrotères": ["couvertine", "acrotere"],
+    "trappes de visite": ["trappe"],
+    "signalétique": ["signaletique"],
+    "protection / nettoyage de fin de chantier": ["nettoyage", "protection des ouvrages"],
+    "habillage gaines / poteaux": ["habillage"],
+    "étanchéité sous carrelage (SPEC)": ["spec", "etancheite sous"]
+  }
+}
