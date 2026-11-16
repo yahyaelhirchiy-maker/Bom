@@ -117,3 +117,6 @@ Plus d'OmniRoute ni de fournisseur en ligne : le secours tourne **sur ce PC** (O
 - Tâches automatiques : `python D:\BK\00_SYSTEME\scripts\conso.py --jours 7` (aussi en annexe du rapport du vendredi).
 - Session interactive (tes vocaux) : commande `/usage` dans Claude Code.
 - Si une tâche coûte trop : baisser son modèle dans `routage.json` ou espacer la relève des mails (`/RI 30` → `/RI 60`).
+
+## Lecture locale des plans (depuis le 16/11/2026)
+`scripts\analyse_plans.py` : pages de plans -> images (PyMuPDF) -> `qwen2.5vl:7b` (Ollama, gratuit, local). Tâches Windows `BOSKO\Plans_reprise` (4 h, réveille le PC) et `BOSKO\Plans_arret` (18 h : arrêt, carte graphique libérée, rapport). Pauses 8 h 40–9 h 10 et 15 h 10–15 h 40 pour le dépannage local ; reprise là où on s'est arrêté (cache `03_TRAVAIL\analyses\plans\_cache`). Ordre des lots et dossiers : `modeles\analyse_marches\TBRP.json`, clé `plans`. Rapport : `04_PUBLIER\analyses\<date>_plans.md`. Journal : `03_TRAVAIL\logs\plans.log`.
