@@ -22,7 +22,7 @@ Secours : si `outlook.py` échoue (Outlook fermé, « Aucun mail envoyé trouvé
 1. Lis D:\BK\03_TRAVAIL\_cache\mails_dernier.txt (AAAA-MM-JJ HH:MM du dernier passage ; à défaut `mails_web_dernier.txt`, sinon 3 jours). Calcule N jours (arrondi au-dessus).
 2. `lister --jours N` et `envoyes --jours N`. Ne garde que les mails reçus après le dernier passage. Ignore newsletters, notifications automatiques, partages SharePoint, invitations Teams, réponses automatiques, et les mails d'autres projets que TBRP – Bosko (ex. Oasis).
 3. Pour chaque mail restant, `lire N`, puis skill traiter-mail (étapes 2 à 8) :
-   - s'il demande une réponse, une date, un document ou une action : brouillon avec `brouillon N` ;
+   - s'il demande une réponse, une date, un document ou une action : **d'abord l'historique du sujet** (`outlook.py chercher <mots>`, skill `traiter-mail` §4 bis : ce qui a déjà été dit ou décidé, par qui, quand), puis brouillon avec `brouillon N` qui s'appuie dessus ;
    - mail délicat (montant, décompte, avenant, pénalité, réclamation, litige, engagement) : brouillon d'attente prudent et alerte dans le compte rendu ;
    - pièce jointe demandée : retrouve le document via D:\BK\03_TRAVAIL\_texte\038 (1re ligne SOURCE = original) et joins l'**original** avec `--pj` (jamais le .txt) ;
    - relance prévue au digest ou demandée par Yahya dans un fil qu'il a lui-même lancé : `brouillon-envoye` ;

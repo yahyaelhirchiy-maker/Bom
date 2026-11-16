@@ -3,6 +3,7 @@
   python outlook.py lister [--jours 2] [--non-lus]
   python outlook.py lire N
   python outlook.py envoyes [--jours 2]
+  python outlook.py chercher <mots...> [--jours 365] [--max 25]   (historique d'un sujet, toute la boîte ; H1, H2… pour lire)
   python outlook.py brouillon N --corps corps.txt [--pj fichier1 fichier2 ...]
   python outlook.py brouillon-envoye "<objet>" [--date AAAA-MM-JJ] --corps corps.txt [--pj ...] [--objet ...]
 
@@ -152,6 +153,46 @@ def remplir(r, corps, pjs):
     print(f"BROUILLON ENREGISTRÉ : {r.Subject}")
 
 
+def dossiers(f):
+    yield f
+    for s in f.Folders:
+        yield from dossiers(s)
+
+
+def chercher(mots, jours, maxi):
+    """Historique d'un sujet : mails (reçus, envoyés, sous-dossiers, toutes les boîtes) dont l'objet ou le corps
+    contient TOUS les mots. Sert à vérifier ce qui a déjà été dit avant de répondre. Numéros H1, H2… pour `lire`."""
+    depuis = (datetime.now() - timedelta(days=jours)).strftime("%m/%d/%Y")
+    cond = " AND ".join(
+        f"(\"urn:schemas:httpmail:subject\" LIKE '%{m}%' OR \"urn:schemas:httpmail:textdescription\" LIKE '%{m}%')"
+        for m in (w.replace("'", "''") for w in mots))
+    filtre = f"@SQL={cond} AND \"urn:schemas:httpmail:date\" >= '{depuis}'"
+    vus, res = set(), []
+    for store in ns().Stores:
+        try:
+            racine = store.GetRootFolder()
+        except Exception:
+            continue
+        for f in dossiers(racine):
+            if f.DefaultItemType != 0 or f.Name.lower() in ("deleted items", "éléments supprimés", "junk email", "courrier indésirable"):
+                continue
+            try:
+                for m in f.Items.Restrict(filtre):
+                    if m.Class == 43 and m.EntryID not in vus:
+                        vus.add(m.EntryID); res.append((m, f.Name))
+            except Exception:
+                continue
+    res.sort(key=lambda x: x[0].SentOn.replace(tzinfo=None), reverse=True)
+    ids = json.loads(CACHE.read_text(encoding="utf-8")) if CACHE.exists() else {}
+    for i, (m, dossier) in enumerate(res[:maxi], 1):
+        ids[f"H{i}"] = m.EntryID
+        apercu = couper_historique(m.Body or "").replace("\n", " ")[:220]
+        print(f"H{i} | {m.SentOn:%Y-%m-%d %H:%M} | {dossier} | {m.SenderName} → {m.To} | {m.Subject} | {apercu}")
+    CACHE.write_text(json.dumps(ids), encoding="utf-8")
+    if not res:
+        print("Aucun mail trouvé.")
+
+
 def exporter(n, sujet, date, vers, avec_mail, avec_pj):
     """Enregistre un mail (reçu : N ; envoyé : --envoye "objet") en .msg et/ou ses pièces jointes
     dans le dossier local `vers` (préparation d'un dépôt SharePoint par sharepoint.py). Ne modifie pas le mail."""
@@ -197,7 +238,12 @@ if __name__ == "__main__":
     xp.add_argument("n", nargs="?"); xp.add_argument("--envoye", help="objet d'un mail envoyé par Yahya")
     xp.add_argument("--date"); xp.add_argument("--vers", required=True)
     xp.add_argument("--mail", action="store_true"); xp.add_argument("--pj", action="store_true")
+    ch = s.add_parser("chercher", help="historique d'un sujet dans toute la boîte (reçus + envoyés + dossiers)")
+    ch.add_argument("mots", nargs="+"); ch.add_argument("--jours", type=int, default=365); ch.add_argument("--max", type=int, default=25)
     x = a.parse_args()
+    if x.cmd == "chercher":
+        sys.stdout.reconfigure(encoding="utf-8")
+        sys.exit(chercher(x.mots, x.jours, x.max))
     sys.stdout.reconfigure(encoding="utf-8")
     if x.cmd == "exporter":
         sys.exit(exporter(x.n, x.envoye, x.date, x.vers, x.mail or not x.pj, x.pj))

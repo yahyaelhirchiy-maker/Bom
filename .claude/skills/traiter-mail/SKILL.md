@@ -38,6 +38,12 @@ Une ligne : date / avancement, document, validation, décompte, information, ré
   → fin prévue, fin de référence, écart, avancement, marge, critique.
 - Historique : chercher le fil (même objet) dans `actions.csv` (`ref_mail`).
 
+## 4 bis. Historique du sujet (obligatoire avant toute réponse)
+Ne jamais répondre « pour répondre ». Avant de rédiger, chercher ce qui a **déjà été dit ou décidé** sur le sujet, dans toute la boîte (reçus, envoyés, sous-dossiers, depuis 1 an) :
+`python D:/BK/00_SYSTEME/scripts/outlook.py chercher <mot1> <mot2> [--jours 365] [--max 25]` (tous les mots doivent figurer ; essayer 2–3 variantes : nom du lot, de l'équipement, de l'entreprise ou du BET cité, ex. « groupe lectrog », « kVA preneur », « Poly groupe »). Lire les plus utiles avec `outlook.py lire H<n>`. Aussi : `scripts\cerveau.py chercher` (documents SharePoint) et `historique` du point dans `tbrp_state.json`.
+Si le mail cite une personne ou un BET (« voir avec Oussama / Poly »), chercher **leurs** échanges sur le sujet.
+La réponse **s'appuie sur cet historique** : rappeler en une ou deux lignes ce qui est déjà acquis (date + qui), proposer une piste concrète tirée des échanges (ex. réutiliser un équipement déjà sur site), et dire ce qui reste à vérifier. Le compte rendu cite les mails retrouvés (date, expéditeur).
+
 ## 5. Décider la réponse
 - **Date demandée** :
   - Lot dans les temps (écart ≤ 0) → donner la date du planning.
