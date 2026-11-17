@@ -77,7 +77,8 @@ class Config:
         for d in l["dossiers"] + l.get("marche", []):
             for f in (self.racine / d).rglob("*"):
                 rel = str(f.relative_to(self.racine))
-                if f.suffix.lower() == ".pdf" and not self.exclure.search(norm(rel)) and self.garder.search(norm(f.name)):
+                if f.suffix.lower() == ".pdf" and not self.exclure.search(norm(rel)) \
+                        and (l.get("tout") or self.garder.search(norm(f.name))):
                     vus[rel] = f
 
         def cle(rel):
