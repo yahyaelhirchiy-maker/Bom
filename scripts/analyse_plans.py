@@ -24,7 +24,7 @@ from secours import demarrer_ollama  # noqa: E402
 OLLAMA = "http://localhost:11434"
 MODELE = "qwen2.5vl:7b"
 ECHELLE = 1.6          # ~115 dpi : une page A3 = 1 image de 1900 px, lisible par le modèle
-TUILE = 1900           # côté maxi d'une image envoyée ; les grands formats sont découpés
+TUILE = 2000           # côté maxi d'une image envoyée ; les grands formats sont découpés
 CONSIGNE = (
     "Page d'un plan de chantier (lot : {lot}). Relève en JSON ce qui est dessiné ou écrit : "
     '{{"titre":"","niveau":"","indice":"","ouvrages":[{{"repere":"","type":"","dimensions":"","quantite":"","materiau":"","remarque":""}}],'
@@ -34,7 +34,10 @@ CONSIGNE = (
     "Recopie les textes et cotes lisibles. Laisse vide ce qui n'est pas lisible. N'invente rien. 25 ouvrages maximum."
 )
 MOTS_VIDES = set("avec pour dans sans selon type ensemble suivant compris toute toutes tous fourniture pose mise oeuvre "
-                 "niveau plan detail details coupe vue vues dessus dessous elevation structure partie element elements".split())
+                 "niveau plan detail details coupe vue vues dessus dessous elevation structure partie element elements "
+                 "repere reperes ligne lignes route voiture voitures cimetiere intersection fabricant description "
+                 "designation caracteristiques taille calcule communications feature features fonctionnalites "
+                 "modifications titre legende echelle indice cartouche nord dessin dessine valeur valeurs".split())
 
 
 def norm(s):
@@ -57,6 +60,7 @@ class Config:
         self.postes = Path(c["travail"]) / "analyses" / "postes.csv"
         self.cache = self.travail / "_cache"
         self.exclure = re.compile(self.p["exclure"], re.I)
+        self.garder = re.compile(self.p.get("garder", "."), re.I)
 
     def perimetre(self, lot):
         l = self.p["lots"][lot]
@@ -73,7 +77,7 @@ class Config:
         for d in l["dossiers"] + l.get("marche", []):
             for f in (self.racine / d).rglob("*"):
                 rel = str(f.relative_to(self.racine))
-                if f.suffix.lower() == ".pdf" and not self.exclure.search(norm(rel)):
+                if f.suffix.lower() == ".pdf" and not self.exclure.search(norm(rel)) and self.garder.search(norm(f.name)):
                     vus[rel] = f
 
         def cle(rel):
@@ -138,26 +142,20 @@ def attendre_tour(cfg):
 
 # ---------- lecture ----------
 def images(page):
-    """Page -> liste d'images PNG (base64). A3+ en portrait = plan tourné : on le remet à l'endroit."""
+    """Page -> liste d'images PNG (base64). A3+ en portrait = plan tourné : on le remet à l'endroit.
+    Grand format : découpe en tuiles dans les coordonnées de la page (5 % de recouvrement)."""
     r = page.rect
     rot = 90 if (r.height > r.width and min(r.width, r.height) > 780) else 0   # > ~275 mm
     m = pymupdf.Matrix(ECHELLE, ECHELLE).prerotate(rot)
-    pix = page.get_pixmap(matrix=m, alpha=False)
-    W, H = pix.width, pix.height
-    nx, ny = -(-W // TUILE), -(-H // TUILE)
+    nx, ny = -(-int(r.width * ECHELLE) // TUILE), -(-int(r.height * ECHELLE) // TUILE)
     if nx * ny == 1:
-        return [base64.b64encode(pix.tobytes("png")).decode()]
-    # Grand format : découpe en tuiles (5 % de recouvrement pour ne pas couper une étiquette),
-    # chaque tuile rendue séparément avec un clip en coordonnées de page.
-    res, tw, th, inv = [], W / nx, H / ny, ~m
+        return [base64.b64encode(page.get_pixmap(matrix=m, alpha=False).tobytes("png")).decode()]
+    res, tw, th = [], r.width / nx, r.height / ny
     for j in range(ny):
         for i in range(nx):
-            x0, y0 = max(0, i * tw - tw * .05), max(0, j * th - th * .05)
-            x1, y1 = min(W, (i + 1) * tw + tw * .05), min(H, (j + 1) * th + th * .05)
-            clip = pymupdf.Rect(x0, y0, x1, y1) * inv
-            clip.normalize()
-            p = page.get_pixmap(matrix=m, clip=clip, alpha=False)
-            res.append(base64.b64encode(p.tobytes("png")).decode())
+            clip = pymupdf.Rect(r.x0 + max(0, i * tw - tw * .05), r.y0 + max(0, j * th - th * .05),
+                                r.x0 + min(r.width, (i + 1) * tw + tw * .05), r.y0 + min(r.height, (j + 1) * th + th * .05))
+            res.append(base64.b64encode(page.get_pixmap(matrix=m, clip=clip, alpha=False).tobytes("png")).decode())
     return res
 
 
@@ -229,7 +227,9 @@ def court(rel, page):
 def rapport(cfg):
     cfg.travail.mkdir(parents=True, exist_ok=True)
     cfg.publier.mkdir(parents=True, exist_ok=True)
-    reps = [json.loads(f.read_text(encoding="utf-8")) for f in sorted(cfg.cache.glob("*.json"))]
+    retenus = {rel for lot in cfg.p["ordre"] for rel in cfg.fichiers(lot)}
+    reps = [r for r in (json.loads(f.read_text(encoding="utf-8")) for f in sorted(cfg.cache.glob("*.json")))
+            if r["fichier"] in retenus]
     # bordereaux : mots des désignations par lot
     bord = defaultdict(set)
     if cfg.postes.exists():
@@ -273,8 +273,9 @@ def rapport(cfg):
         s["n"] += 1
         s["type"] = l["type"]
         s["ailleurs"] = bool(m & tous_bord)
-        if len(s["src"]) < 3:
-            s["src"].append(court(l["fichier"], l["page"]))
+        src = court(l["fichier"], l["page"])
+        if len(s["src"]) < 3 and src not in s["src"]:
+            s["src"].append(src)
 
     # 2. repères apparus depuis les plans du marché
     nouveaux = []

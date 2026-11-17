@@ -265,7 +265,7 @@
         "15:10-15:40"
       ]
     },
-    "exclure": "methodolog|mode op|formulation|ndc|note de calcul|\\bpv\\b|\\bcv\\b|fiche|ft.?s\\b|devis|assurance|rapport|bilan|planning|photo|essai|carottage|labo|attestation|facture|caution|avancement|reception|\\bold\\b|archive|scan booklet",
+    "exclure": "methodolog|mode op|formulation|ndc|note de calcul|\\bpv\\b|\\bcv\\b|fiche|ft.?s\\b|devis|assurance|rapport|bilan|planning|photo|essai|carottage|labo|attestation|facture|caution|avancement|reception|\\bold\\b|archive|scan booklet|note d.?eclairement|catalogue|notice|documentation|datasheet|data sheet|brochure|certificat|\\babb\\b|ledvance|schneider|legrand",
     "ordre": [
       "VER",
       "ALU",
@@ -361,6 +361,7 @@
         ],
         "marche": []
       }
-    }
+    },
+    "garder": "plan|exe|facade|coupe|detail|carnet|repera|calepinage|h224|niveau|toiture|terrasse|\\bss|rdc|rdj|etage|r\\+\\d|elevation|synoptique|schema|implantation|principe|verriere|mur.?rideau|menuiserie"
   }
 }
