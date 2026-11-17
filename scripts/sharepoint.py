@@ -85,6 +85,7 @@ def deposer(fichiers, dans, creer, motif):
         dossier.mkdir(parents=True)
         print(f"DOSSIER CRÉÉ : {rel(dossier)}")
     neuf = not JOURNAL.exists()
+    deposes = []
     with open(JOURNAL, "a", encoding="utf-8-sig", newline="") as j:
         w = csv.writer(j, delimiter=";")
         if neuf:
@@ -101,6 +102,14 @@ def deposer(fichiers, dans, creer, motif):
             shutil.copy2(src, cible)  # copie : l'original reste où il est
             w.writerow([f"{dt.datetime.now():%Y-%m-%d %H:%M}", rel(cible), str(src), motif])
             print(f"DÉPOSÉ : {rel(cible)}")
+            deposes.append(str(cible))
+    if deposes:  # second cerveau : le document déposé devient cherchable tout de suite
+        try:
+            import subprocess
+            subprocess.run([sys.executable, str(Path(__file__).with_name("cerveau.py")), "ajouter", *deposes],
+                           timeout=600, check=False)
+        except Exception as e:
+            print(f"Index du cerveau non mis à jour : {e}")
 
 
 if __name__ == "__main__":

@@ -5,11 +5,15 @@ Usage :
   cerveau.py indexer            # incremental : nouveaux/modifies, retire les disparus
   cerveau.py chercher "mots" [-n 5] [--chemin mot]   # extraits courts + source
   cerveau.py stats
+  cerveau.py sources [--jours 90] [--sans-mails]   # mails Outlook, tbrp_state.json, planning -> _texte, puis indexer
+  cerveau.py ajouter <fichier...>    # fichier depose sur SharePoint : conversion texte + indexation
 
 Lit seulement 03_TRAVAIL/_texte/ (jamais les originaux). Ecrit seulement
-03_TRAVAIL/_cache/cerveau.db. Zero token : tout est local.
+03_TRAVAIL/_cache/cerveau.db et, pour `sources`/`ajouter`, des .txt dans _texte/.
+Zero token : tout est local.
 """
-import argparse, os, re, sqlite3, sys, time
+import argparse, csv, hashlib, json, os, re, sqlite3, sys, time
+from datetime import datetime, timedelta
 
 RACINE = r"D:\BK"
 TEXTE = os.path.join(RACINE, "03_TRAVAIL", "_texte")
@@ -127,6 +131,134 @@ def chercher(a):
         print(f"- {src}{marque}\n    {ext}")
 
 
+TRAVAIL = os.path.join(RACINE, "03_TRAVAIL")
+ETAT = os.path.join(TRAVAIL, "pilotage", "tbrp_state.json")
+TACHES = os.path.join(TRAVAIL, "planning", "taches.csv")
+MIROIR_038 = os.path.join(RACINE, "01_MIROIR", "OneDrive - AEDGE Partners", "038")
+
+
+def ecrire(chemin, source, texte):
+    """N'ecrit que si le contenu change (sinon l'index ne bouge pas)."""
+    contenu = f"SOURCE: {source}\n\n{texte}"
+    if os.path.exists(chemin):
+        with open(chemin, encoding="utf-8") as fh:
+            if fh.read() == contenu:
+                return 0
+    os.makedirs(os.path.dirname(chemin), exist_ok=True)
+    with open(chemin, "w", encoding="utf-8") as fh:
+        fh.write(contenu)
+    return 1
+
+
+def a_plat(v, retrait=""):
+    if isinstance(v, dict):
+        return "\n".join(f"{retrait}{k} : {a_plat(x, retrait + '  ').lstrip()}" for k, x in v.items()
+                         if x not in (None, "", [], {}))
+    if isinstance(v, list):
+        return "\n" + "\n".join(f"{retrait}- {a_plat(x, retrait + '  ').lstrip()}" for x in v)
+    return str(v)
+
+
+def source_etat():
+    """tbrp_state.json : un .txt par point P, decision D et rubrique (historique compris)."""
+    with open(ETAT, encoding="utf-8") as fh:
+        d = json.load(fh)
+    sortie = os.path.join(TEXTE, "_pilotage")
+    n = 0
+    for cle, val in d.items():
+        if isinstance(val, list) and val and all(isinstance(x, dict) and x.get("id") for x in val):
+            for x in val:
+                titre = f"{x['id']} - {x.get('sujet') or x.get('lot') or ''}"
+                n += ecrire(os.path.join(sortie, f"{x['id']}.txt"), f"tbrp_state.json#{x['id']}",
+                            f"{titre}\n{a_plat(x)}")
+        else:
+            n += ecrire(os.path.join(sortie, f"_{cle}.txt"), f"tbrp_state.json#{cle}", f"{cle}\n{a_plat(val)}")
+    return n
+
+
+def source_planning():
+    """planning/taches.csv (extrait du .mpp) : un .txt par bloc de 40 taches, lisible."""
+    with open(TACHES, encoding="utf-8-sig") as fh:
+        lignes = list(csv.DictReader(fh, delimiter=";"))
+    src = lignes[0]["source"] if lignes else TACHES
+    sortie = os.path.join(TEXTE, "_planning")
+    n = 0
+    for i in range(0, len(lignes), 40):
+        txt = []
+        for t in lignes[i:i + 40]:
+            crit = " | CRITIQUE" if (t.get("critique") or "").strip().lower() in ("1", "oui", "true", "vrai") else ""
+            txt.append(f"{t['id']}. {t['chemin'].strip()} > {t['nom']} : {t['debut']} -> {t['fin']}"
+                       f" | marge {t['marge_j']} j | avancement {t['avancement']}{crit}"
+                       + (f" | {t['ressources']}" if t.get("ressources") else ""))
+        n += ecrire(os.path.join(sortie, f"taches_{i // 40 + 1:02d}.txt"), src, "Planning (taches)\n" + "\n".join(txt))
+    return n
+
+
+def source_mails(jours):
+    """Mails Outlook (recus + envoyes) des N derniers jours : un .txt par mail, historique coupe."""
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import outlook  # win32com : seulement si Outlook est utilise
+    sortie = os.path.join(TEXTE, "_mails")
+    depuis = datetime.now() - timedelta(days=jours)
+    n = vus = 0
+    for dossier, champ in ((6, "ReceivedTime"), (5, "SentOn")):
+        items = outlook.ns().GetDefaultFolder(dossier).Items
+        items.Sort(f"[{champ}]", True)
+        for m in items:
+            try:
+                if m.Class != 43:
+                    continue
+                quand = getattr(m, champ).replace(tzinfo=None)
+                if quand < depuis:
+                    break
+                cle = hashlib.sha1(m.EntryID.encode()).hexdigest()[:12]
+                chemin = os.path.join(sortie, f"{quand:%Y-%m}", f"{quand:%Y-%m-%d_%H%M}_{cle}.txt")
+                vus += 1
+                if os.path.exists(chemin):
+                    continue  # un mail ne change pas
+                sens = "RECU" if dossier == 6 else "ENVOYE"
+                pj = "; ".join(a.FileName for a in m.Attachments)
+                entete = (f"MAIL {sens} {quand:%Y-%m-%d %H:%M}\nDE : {m.SenderName} <{outlook.expediteur(m)}>\n"
+                          f"A : {m.To}\nCC : {m.CC}\nOBJET : {m.Subject}" + (f"\nPJ : {pj}" if pj else ""))
+                n += ecrire(chemin, f"Outlook : {quand:%Y-%m-%d} {m.SenderName} - {m.Subject}",
+                            entete + "\n\n" + outlook.couper_historique(m.Body or ""))
+            except Exception as e:  # un element illisible ne bloque pas les autres
+                print(f"Mail ignore : {e}")
+    return n, vus
+
+
+def sources(a):
+    n = source_etat()
+    print(f"tbrp_state.json : {n} fichier(s) mis a jour")
+    n = source_planning()
+    print(f"Planning : {n} fichier(s) mis a jour")
+    if not a.sans_mails:
+        try:
+            n, vus = source_mails(a.jours)
+            print(f"Mails : {n} nouveau(x) sur {vus} ({a.jours} j)")
+        except Exception as e:
+            print(f"Mails non lus (Outlook ferme ?) : {e}")
+    indexer(a)
+
+
+def ajouter(a):
+    """Apres un depot SharePoint : convertit les fichiers deposes (sous 038) et met l'index a jour."""
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    from convertir_texte import LECTEURS
+    for f in a.fichiers:
+        lecteur = LECTEURS.get(os.path.splitext(f)[1].lower())
+        if not lecteur:
+            continue
+        try:
+            rel = os.path.relpath(f, MIROIR_038)
+            if rel.startswith(".."):
+                continue
+            ecrire(os.path.join(TEXTE, "038", rel + ".txt"), f, lecteur(f))
+        except Exception as e:
+            print(f"Conversion impossible {f} : {e}")
+    indexer(a)
+
+
 def stats(_):
     c = connexion()
     d = c.execute("SELECT COUNT(*) FROM docs").fetchone()[0]
@@ -144,5 +276,12 @@ if __name__ == "__main__":
     s.add_argument("--chemin", default="")
     s.set_defaults(f=chercher)
     sp.add_parser("stats").set_defaults(f=stats)
+    s = sp.add_parser("sources")
+    s.add_argument("--jours", type=int, default=90)
+    s.add_argument("--sans-mails", action="store_true")
+    s.set_defaults(f=sources)
+    s = sp.add_parser("ajouter")
+    s.add_argument("fichiers", nargs="+")
+    s.set_defaults(f=ajouter)
     a = ap.parse_args()
     a.f(a)
