@@ -147,13 +147,50 @@ def brouillon(n, corps, pjs):
     remplir(mail(n).ReplyAll(), corps, pjs)
 
 
+def adresse(rc):
+    """Adresse SMTP d'un destinataire (comptes Exchange compris)."""
+    try:
+        ae = rc.AddressEntry
+        if ae.Type == "EX":
+            u = ae.GetExchangeUser()
+            if u:
+                return (u.PrimarySmtpAddress or "").lower()
+        return (ae.Address or rc.Address or "").lower()
+    except Exception:
+        return (rc.Address or "").lower()
+
+
+def dedoublonner(r):
+    """Une seule fois chaque personne : si elle est en À, on retire ses copies ; sinon un seul Cc."""
+    r.Recipients.ResolveAll()
+    garde, retirer = {}, []
+    for i in range(1, r.Recipients.Count + 1):
+        rc = r.Recipients.Item(i)
+        if rc.Type == 3:
+            continue  # Cci non touché
+        cle = adresse(rc) or rc.Name.lower()
+        if cle not in garde:
+            garde[cle] = (i, rc.Type)
+        elif rc.Type == 1 and garde[cle][1] != 1:  # en À ailleurs : on garde le À
+            retirer.append(garde[cle][0]); garde[cle] = (i, 1)
+        else:
+            retirer.append(i)
+    for i in sorted(retirer, reverse=True):
+        r.Recipients.Remove(i)
+
+
 def remplir(r, corps, pjs):
-    deja = (r.To + ";" + r.CC).lower()
+    r.Recipients.ResolveAll()
+    deja = set()
+    for i in range(1, r.Recipients.Count + 1):
+        rc = r.Recipients.Item(i)
+        deja.add(adresse(rc)); deja.add(rc.Name.lower())
     with open(CONTACTS, encoding="utf-8-sig") as f:
         for c in csv.DictReader(f, delimiter=";"):
             if c["cc_systematique"].strip().lower() == "oui" and c["email"].lower() not in deja:
                 r.Recipients.Add(c["email"]).Type = CC
-    r.Recipients.ResolveAll()
+                deja.add(c["email"].lower())
+    dedoublonner(r)
     texte = Path(corps).read_text(encoding="utf-8-sig").strip()
     paras = "".join(f"<p>{html.escape(l)}</p>" for l in texte.split("\n\n")).replace("\n", "<br>")
     bloc = f'<div style="font-family:Calibri;font-size:11pt">{paras}</div>'

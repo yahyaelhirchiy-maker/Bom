@@ -20,7 +20,8 @@ Ces informations vont dans le champ **`note_interne`** du point (jamais imprimé
    `python D:/BK/00_SYSTEME/scripts/outlook.py brouillon-envoye "TBRP - CR réunion de chantier" --date <AAAA-MM-JJ du dernier CR envoyé> --corps <fichier.txt> --pj "D:/BK/04_PUBLIER/odj/<AAMMJJ>.TBRP ODJ Réunion chantier.pdf" --objet "TBRP - ODJ réunion de chantier du JJ/MM/AAAA"`
    Répond à tous sur le dernier CR envoyé par Yahya, joint le PDF, Cc habituels, enregistre en Brouillons : jamais d'envoi. Secours : Outlook Web, texte seulement.
 4. `python D:/BK/00_SYSTEME/scripts/importer_pilotage.py` puis commit local « ODJ du JJ/MM ».
-5. Rendre compte en 3 lignes : PDF, brouillon, points à rattraper (CR manquants, notes attendues).
+4 bis. Page ODJ à remplir en réunion : `python D:/BK/00_SYSTEME/scripts/odj_page.py <mardi AAAA-MM-JJ>` → `04_PUBLIER\odj\odj_page.html`, puis la publier avec l'outil Artifact **sur l'URL de `modeles\odj_page\URL.txt`** (paramètre `url`, toujours la même page ; la lire d'abord avec `action: "read"` si cette session ne l'a pas encore publiée). Ne pas changer `capabilities` (db + user). Les saisies de la semaine vont dans la collection `r<AAMMJJ>`, celles des semaines passées restent intactes.
+5. Rendre compte en 3 lignes : PDF, brouillon, lien de la page ODJ, points à rattraper (CR manquants, notes attendues).
 
 
 Style : tout texte envoyé (brouillon, CR, ODJ, commentaire de tableau, message proposé) suit `modeles/consignes/style_yahya.md` ; jamais de source citée dans le texte.

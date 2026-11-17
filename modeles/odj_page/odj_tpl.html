@@ -1,0 +1,64 @@
+<title>ODJ chantier __DCOURT__</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@600&display=swap">
+<style>
+/* Feuille de réunion : bandeau lot, cartes points compactes, saisie directe sous chaque point */
+:root{--bg:#f5f6f8;--card:#fff;--fg:#1b2230;--mute:#5d6778;--line:#dde1e8;--accent:#1F3864;--late:#b3261e;--go:#1d7a46;--warn:#a86400;--new:#5b3fa8;
+--f-body:"IBM Plex Sans",system-ui,sans-serif;--f-head:"IBM Plex Sans Condensed","IBM Plex Sans",system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#11151c;--card:#1a2029;--fg:#e6e9ef;--mute:#98a2b3;--line:#2c3440;--accent:#8fb0e8;--late:#f2867c;--go:#6fcf97;--warn:#f0b35a;--new:#b9a4f0;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#11151c;--card:#1a2029;--fg:#e6e9ef;--mute:#98a2b3;--line:#2c3440;--accent:#8fb0e8;--late:#f2867c;--go:#6fcf97;--warn:#f0b35a;--new:#b9a4f0;color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.45}
+.wrap{max-width:860px;margin:0 auto;padding-block:16px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1{font-family:var(--f-head);font-size:22px;margin:0;color:var(--accent);text-wrap:balance}
+.sub{color:var(--mute);font-size:13px;margin:2px 0 12px}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px;font-size:13px}
+.bar button{font:inherit;border:1px solid var(--line);background:var(--card);color:var(--fg);border-radius:6px;padding:5px 10px;cursor:pointer}
+.bar button[aria-pressed="true"]{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+#etat{color:var(--mute);margin-left:auto}
+.lot{font-family:var(--f-head);text-transform:uppercase;letter-spacing:.04em;font-size:13px;color:var(--accent);margin:22px 0 6px;border-bottom:2px solid var(--accent);padding-bottom:3px}
+.pt{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-bottom:8px}
+.pt.done{opacity:.6}
+.hd{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.num{font-variant-numeric:tabular-nums;font-weight:600;color:var(--mute);min-width:1.6em}
+.suj{font-weight:600;flex:1;min-width:0}
+.chip{font-size:11px;padding:1px 7px;border-radius:10px;border:1px solid currentColor;white-space:nowrap}
+.s-Retard{color:var(--late)}.s-En{color:var(--warn)}.s-Nouveau{color:var(--new)}.s-Engagement,.s-Reconduit{color:var(--mute)}.s-Clos,.s-Levé{color:var(--go)}
+.meta{font-size:12px;color:var(--mute);margin:3px 0}
+.act{margin:4px 0}.obs{font-size:13px;color:var(--mute)}
+.f{display:grid;grid-template-columns:auto 1fr;gap:6px 8px;margin-top:8px;align-items:start}
+.f select,.f textarea,.f input{font:inherit;font-size:14px;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:5px 7px;min-width:0}
+.f textarea{grid-column:1/-1;min-height:40px;resize:vertical}
+.f label{font-size:13px;display:flex;gap:6px;align-items:center}
+.new{margin-top:24px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+</style>
+<div class="wrap">
+<h1>Réunion de chantier TBRP – __DLONG__</h1>
+<div class="sub">Ordre du jour – mardi 9h, site TBRP. Ce que tu saisis est enregistré et servira au CR.</div>
+<div class="bar"><button id="fAll" aria-pressed="true">Tous</button><button id="fP1" aria-pressed="false">Priorité 1</button><button id="fOpen" aria-pressed="false">Non abordés</button><span id="etat">Prêt</span></div>
+<div id="list">__LIST__</div>
+<div class="lot new">Points nouveaux en séance</div>
+<div class="pt"><div class="f"><textarea id="divers" placeholder="Sujet, intervenant, action, échéance (un point par ligne)"></textarea></div></div>
+</div>
+<script>
+var db=null,T={},filt="all";
+function $(i){return document.getElementById(i)}
+function etat(t){$("etat").textContent=t}
+function fill(n,d){if(!d||!$("st"+n))return;$("st"+n).value=d.statut||"";$("ec"+n).value=d.ech||"";$("ob"+n).value=d.obs||"";$("vu"+n).checked=!!d.vu;applyF()}
+function applyF(){var lots=document.querySelectorAll(".lot:not(.new)");document.querySelectorAll("#list .pt").forEach(function(c){var n=c.dataset.n,vu=$("vu"+n).checked;c.classList.toggle("done",vu);c.hidden=(filt=="p1"&&c.dataset.p!="1")||(filt=="open"&&vu)});
+ lots.forEach(function(l){var x=l.nextElementSibling,any=false;while(x&&x.classList.contains("pt")){if(!x.hidden)any=true;x=x.nextElementSibling}l.hidden=!any})}
+function val(n){return{statut:$("st"+n).value,ech:$("ec"+n).value,obs:$("ob"+n).value,vu:$("vu"+n).checked}}
+var local={};try{local=JSON.parse(localStorage.getItem("odj__TAG__")||"{}")}catch(e){}
+for(var k in local)fill(k,local[k]);
+function save(n){var d=val(n);local[n]=d;try{localStorage.setItem("odj__TAG__",JSON.stringify(local))}catch(e){}
+ if(!db){etat("Enregistré sur cet appareil");return}
+ db.doc("r__TAG__/"+n).set(d).then(function(){etat("Enregistré")},function(){etat("Échec de l'enregistrement, réessaie")})}
+$("list").addEventListener("input",function(e){var c=e.target.closest(".pt");if(!c)return;var n=c.dataset.n;etat("…");clearTimeout(T[n]);T[n]=setTimeout(function(){save(n)},600);if(e.target.type=="checkbox")applyF()});
+$("list").addEventListener("change",function(e){if(e.target.tagName=="SELECT"||e.target.type=="checkbox"){var c=e.target.closest(".pt");if(c){clearTimeout(T[c.dataset.n]);save(c.dataset.n);applyF()}}});
+var dv=$("divers");try{dv.value=localStorage.getItem("odj__TAG__d")||""}catch(e){}
+dv.addEventListener("input",function(){clearTimeout(T.d);T.d=setTimeout(function(){try{localStorage.setItem("odj__TAG__d",dv.value)}catch(e){}if(db)db.doc("r__TAG__/divers").set({texte:dv.value}).then(function(){etat("Enregistré")},function(){etat("Échec de l'enregistrement")})},600)});
+[["fAll","all"],["fP1","p1"],["fOpen","open"]].forEach(function(a){$(a[0]).onclick=function(){filt=a[1];document.querySelectorAll(".bar button").forEach(function(b){b.setAttribute("aria-pressed",b.id==a[0])});applyF()}});
+(async function(){try{db=window.claude&&window.claude.use?await window.claude.use("db"):null}catch(e){db=null}
+ if(!db){etat("Enregistré sur cet appareil seulement");return}
+ try{var q=await db.collection("r__TAG__").get();var docs=q.docs||q||[];docs.forEach(function(d){var v=typeof d.data=="function"?d.data():(d.data||d);if(d.id=="divers"){if(v.texte&&!dv.value)dv.value=v.texte}else fill(d.id,v)});etat("Synchronisé")}catch(e){etat("Prêt")}})();
+</script>
