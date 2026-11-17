@@ -283,13 +283,16 @@ def rapport(cfg):
         mar = cfg.marche(lot)
         if not mar:
             continue
-        rep_m = {norm(l["repere"]) for l in lignes if l["lot"] == lot and l["fichier"].startswith(mar)}
+        rep_m = {norm(l["repere"]) for l in lignes if l["lot"] == lot and l["fichier"].replace("\\", "/").startswith(mar)}
         if not rep_m:
             continue
         vus = {}
         for l in lignes:
             r = norm(l["repere"])
-            if l["lot"] == lot and r and not l["fichier"].startswith(mar) and r not in rep_m and len(r) <= 12:
+            d = re.findall(r"(?:^|[\\/])(\d{6})[ .]", l["fichier"])
+            recent = not cfg.p["lots"][lot].get("date_marche") or (d and d[-1] > cfg.p["lots"][lot]["date_marche"])
+            if (l["lot"] == lot and recent and re.fullmatch(r"[a-z]{1,3} ?\d{1,3}", r)
+                    and not l["fichier"].replace("\\", "/").startswith(mar) and r not in rep_m):
                 vus.setdefault(r, (l["repere"], l["type"], court(l["fichier"], l["page"])))
         nouveaux += [(lot,) + v for v in vus.values()]
 
