@@ -23,3 +23,6 @@ Règles absolues :
 5. (Fait par le passage lui-même : importer_pilotage.py et digest.py.) Commit local si quelque chose a changé : git -C D:/BK/03_TRAVAIL add -A puis git -C D:/BK/03_TRAVAIL commit -m "Mails <date>". Jamais de push.
 6. Écris D:\BK\03_TRAVAIL\_cache\mails_web_dernier.txt avec la date et l'heure de ce passage.
 7. Écris le compte rendu dans D:\BK\04_PUBLIER\mails\<AAAA-MM-JJ_HHMM>.md : un bloc de 5 lignes par brouillon préparé (format du skill traiter-mail §8), puis une ligne par mail sans suite, puis les points de chantier mis à jour, puis les alertes.
+
+
+Style : tout texte envoyé (brouillon, CR, ODJ, commentaire de tableau, message proposé) suit `modeles/consignes/style_yahya.md` ; jamais de source citée dans le texte.

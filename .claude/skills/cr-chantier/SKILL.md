@@ -41,3 +41,6 @@ Cela ajoute les Cc habituels (contacts.csv), joint le PDF et enregistre en Broui
 
 ## 6. Rendre compte
 PDF produit, brouillon prêt, et la liste à vérifier : points mis à jour depuis les mails plutôt que les notes, échéances déduites, formulations durcies.
+
+
+Style : tout texte envoyé (brouillon, CR, ODJ, commentaire de tableau, message proposé) suit `modeles/consignes/style_yahya.md` ; jamais de source citée dans le texte.

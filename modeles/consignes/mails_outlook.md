@@ -31,3 +31,6 @@ Secours : si `outlook.py` échoue (Outlook fermé, « Aucun mail envoyé trouvé
 4. Commit local si quelque chose a changé : `git -C D:/BK/03_TRAVAIL add -A` puis `commit -m "Mails <date>"`. Jamais de push.
 5. Écris D:\BK\03_TRAVAIL\_cache\mails_dernier.txt (date et heure de ce passage).
 6. Compte rendu dans D:\BK\04_PUBLIER\mails\<AAAA-MM-JJ_HHMM>.md : un bloc de 5 lignes par brouillon (format traiter-mail §8), une ligne par mail sans suite, les points de chantier mis à jour, puis les alertes.
+
+
+Style : tout texte envoyé (brouillon, CR, ODJ, commentaire de tableau, message proposé) suit `modeles/consignes/style_yahya.md` ; jamais de source citée dans le texte.

@@ -57,6 +57,7 @@ La réponse **s'appuie sur cet historique** : rappeler en une ou deux lignes ce 
 
 ## 6. Rédiger
 - Tutoiement, sauf Nadia (vouvoiement). Court, factuel, une idée par paragraphe, pas de formule creuse.
+- **Écrire comme Yahya** : `modeles/consignes/style_yahya.md` (jamais de source citée, « MAD », formules à lui, relecture en 4 questions).
 - Écrire le corps dans `D:/BK/03_TRAVAIL/_cache/corps.txt`, puis :
   `python D:/BK/00_SYSTEME/scripts/outlook.py brouillon N --corps D:/BK/03_TRAVAIL/_cache/corps.txt --pj <fichiers>`
 - Le script répond dans le fil, ajoute les Cc systématiques et **enregistre** sans envoyer.

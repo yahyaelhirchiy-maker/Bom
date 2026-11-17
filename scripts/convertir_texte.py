@@ -1,4 +1,4 @@
-"""Convertit une seule fois les documents (PDF, DOCX, XLSX) en texte.
+"""Convertit une seule fois les documents (PDF, DOCX, XLSX, PPTX, MSG, HTML) en texte.
 
 Usage :  python convertir_texte.py D:\\BK\\02_ENTRANT [D:\\BK\\03_TRAVAIL\\_texte]
 
@@ -12,14 +12,27 @@ from pathlib import Path
 SORTIE_DEFAUT = Path(r"D:\BK\03_TRAVAIL\_texte")
 
 
+def lire_markitdown(p):
+    """MarkItDown (Microsoft) : garde les tableaux (Word, PowerPoint, mails .msg).
+    Ni transcription audio ni OCR par IA : rien ne sort du PC."""
+    from markitdown import MarkItDown
+    return MarkItDown(enable_plugins=False).convert(str(p)).text_content
+
+
 def lire_pdf(p):
     from pypdf import PdfReader
-    return "\n".join((page.extract_text() or "") for page in PdfReader(p).pages)
+    texte = "\n".join((page.extract_text() or "") for page in PdfReader(p).pages)
+    if len(texte.strip()) < 50:  # pypdf n'a rien sorti : 2e essai avec MarkItDown (pdfminer)
+        texte = lire_markitdown(p) or texte
+    return texte
 
 
 def lire_docx(p):
-    from docx import Document
-    return "\n".join(par.text for par in Document(p).paragraphs)
+    try:
+        return lire_markitdown(p)  # paragraphes + tableaux
+    except Exception:
+        from docx import Document
+        return "\n".join(par.text for par in Document(p).paragraphs)
 
 
 def lire_xlsx(p):
@@ -33,7 +46,9 @@ def lire_xlsx(p):
     return "\n".join(lignes)
 
 
-LECTEURS = {".pdf": lire_pdf, ".docx": lire_docx, ".xlsx": lire_xlsx, ".xlsm": lire_xlsx}
+LECTEURS = {".pdf": lire_pdf, ".docx": lire_docx, ".xlsx": lire_xlsx, ".xlsm": lire_xlsx,
+            ".pptx": lire_markitdown, ".msg": lire_markitdown, ".html": lire_markitdown,
+            ".htm": lire_markitdown}
 
 
 def main():

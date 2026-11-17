@@ -19,6 +19,9 @@ Claude Code est lancé depuis `D:\BK\00_SYSTEME` ; les données sont dans `D:\BK
 - Ne rien pousser vers GitHub depuis `03_TRAVAIL`.
 - Confidentialité : à une entreprise, jamais de budget, de montant d'un autre lot, de marge planning ni de position interne MOD.
 
+## Style (tout texte envoyé sous le nom de Yahya)
+Suivre `modeles\consignes\style_yahya.md` : court, ses formules, montants en MAD, **jamais de source citée** (« mail de X du JJ/MM », « d'après… », nom de fichier). Les sources restent dans les registres, pas dans les mails, CR, ODJ ni colonnes Commentaires.
+
 ## Mails entrants
 Procédure complète : skill `traiter-mail`. Objectif : brouillon prêt à envoyer (réponse, date justifiée par le planning, PJ si demandée) + registres à jour.
 
