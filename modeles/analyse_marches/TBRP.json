@@ -379,5 +379,34 @@
       }
     },
     "garder": "plan|exe|facade|coupe|detail|carnet|repera|calepinage|h224|niveau|toiture|terrasse|\\bss|rdc|rdj|etage|r\\+\\d|elevation|synoptique|schema|implantation|principe|verriere|mur.?rideau|menuiserie"
+  },
+  "faits": {
+    "_lisez_moi": "Config de scripts/faits.py (second cerveau, jour 2). 'dossiers' : préfixes sous 03_TRAVAIL\\_texte. 'mots' : expressions régulières qui désignent le lot. 'exclure' : chemins écartés (offres des autres soumissionnaires, fiches techniques, archives, autres lots de GIDNA).",
+    "dossiers": [
+      "_mails",
+      "038/04. Construction",
+      "038/07. Achats & marchés/02. Entreprises/10 - Menuiserie Alu/02 - Contrat",
+      "038/07. Achats & marchés/02. Entreprises/05. Gros Œuvre - Etanchéité - CM/02. Contrat- Marché - Avenants/03. Avenants/02. Avenant 2 GIDNA",
+      "038/00. Dashboard"
+    ],
+    "hors_projet": "oasis",
+    "exclure": "fiches? tech|/FT/|\\. FT/|dossier administratif|/Archives?/|/CFO/|/CFA/|plomberie|Annexe 7|/CV/|/_SUPPORT/",
+    "lots": {
+      "VER": {
+        "intitule": "Verrière en aluminium (GIDNA, avenant 2 du gros œuvre)",
+        "mots": [
+          "verri[eè]re"
+        ]
+      },
+      "ALU": {
+        "intitule": "Menuiserie aluminium / murs-rideaux (GM)",
+        "mots": [
+          "menuiseries? alu",
+          "murs?[ -]?rideaux?",
+          "\\bGM\\b",
+          "ch[aâ]ssis"
+        ]
+      }
+    }
   }
 }

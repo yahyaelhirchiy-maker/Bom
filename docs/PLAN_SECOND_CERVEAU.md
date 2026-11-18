@@ -50,7 +50,7 @@ Mis à jour par la tâche `bosko-second-cerveau`. État vérifié dans `scripts\
 |---|---|---|
 | Jour 1 — index des textes SharePoint | fait (16/11) | `cerveau.py indexer` / `chercher` ; base `_cache\cerveau.db` |
 | Jour 1 fin — mails, `tbrp_state.json`, planning, réindexation après dépôt SharePoint | fait (17/11) | `cerveau.py sources` (mails reçus+envoyés 90 j → `_texte\_mails`, points P/D → `_texte\_pilotage`, `taches.csv` → `_texte\_planning`), lancé chaque matin (`matin.md`, 7 j) ; `sharepoint.py deposer` appelle `cerveau.py ajouter`. 17/11 : 428 mails, 79 fiches état, 4 fiches planning ; 6370 documents indexés |
-| Jour 2 — faits sourcés par Qwen (GIDNA, GM), plans compris, pause auto | en cours | Existe : lecture des plans par `analyse_plans.py` (qwen2.5vl, horaires/pauses, `analyses\plans\ouvrages.csv`). Reste : extraction de faits sourcés (dates, versions, engagements, montants, acteurs) par document et mail GIDNA/GM, file Qwen unique |
+| Jour 2 — faits sourcés par Qwen (GIDNA, GM), plans compris, pause auto | en cours (54/168 documents) | Plans : `analyse_plans.py` (qwen2.5vl, `analyses\plans\ouvrages.csv`). Faits : `faits.py extraire` (18/11, qwen3:14b, config `TBRP.json` clé `faits`) — mails puis documents VER/ALU, passages à mots-clés, citation exacte vérifiée par Python, cache par document, attend si un autre modèle est chargé ou créneau réservé, régime réduit si le PC est utilisé, Oasis exclu. Sorties : `03_TRAVAIL\analyses\faits\faits.csv` + `par_document.md`. 18/11 : 54 documents lus (22 mails + 32 docs récents, surtout CR de chantier), 171 faits, citation retrouvée 164/171. Reste : 114 documents (~1 h 30 de Qwen) — relancer `python scripts\faits.py extraire --minutes 50` (reprend seul) |
 | Jour 3 — contrôle d'un échantillon Qwen par Claude | à faire | |
 | Jour 4 — mémoire par lot / entreprise / BET | à faire | |
 | Jour 5 — dossier compact des passages + santé | à faire | |
@@ -62,3 +62,4 @@ avis Yahya (bilan jour 7) :
 
 Journal :
 - 2026-11-17 : jour 1 terminé (mails, état, planning dans l'index ; réindexation après dépôt). Prochaine étape : jour 2.
+- 2026-11-18 : jour 2 avancé — `faits.py` créé, 54/168 documents lus (171 faits, 96 % de citations retrouvées). Deux appels Qwen ont dépassé 15 min (réponse plafonnée depuis). Lancé de nuit avec `--sans-horaires`. Reste : finir les 114 documents, puis jour 3 (revue).
