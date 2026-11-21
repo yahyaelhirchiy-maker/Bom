@@ -100,3 +100,5 @@ Procédure complète : skill `traiter-mail`. Objectif : brouillon prêt à envoy
 - `bosko-matin` 7h30 et `bosko-apres-midi` 14h (consignes : `modeles\consignes\matin.md` et `apres-midi.md`). Rien d'autre ne lance Claude (sauf `BOSKO\Sauvegarde`, sans Claude).
 - Un passage ne lit que : `CLAUDE.md`, `03_TRAVAIL\ETAT.md`, `03_TRAVAIL\_cache\digest.md` (produit par `scripts\digest.py`), les notes en attente et les nouveaux mails. Pas les registres entiers.
 - **Rattrapage** : chaque passage écrit des marqueurs (`scripts\passage_ok.py debut|fin`). La tâche `bosko-rattrapage` (8h50, 14h50) vérifie gratuitement ; si le passage a échoué (ex. erreur 529), elle le refait, sinon elle s'arrête en une ligne. En cas d'échec, ne pas rendre compte d'« erreur serveur » à Yahya sans avoir relancé.
+- **Coût par passage** : la tâche Windows `BOSKO\Conso` (22h30, sans Claude) lit les transcriptions et ajoute une ligne par passage terminé (matin, apres-midi, rattrapage, sharepoint, optimisation, etc.) dans `logs\consommation.csv` (`scripts\conso_passages.py` ; `--resume` = moyenne 14 jours). Coût = équivalent au tarif API, estimé.
+
